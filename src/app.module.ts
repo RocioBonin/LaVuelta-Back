@@ -7,6 +7,7 @@ import { UsersModule } from './users/user.module';
 import { AuthModule } from './auth/auth.module';
 import { JwtModule } from '@nestjs/jwt';
 import { SeedsModule } from './seeds/seeds.module';
+import { NewsletterModule } from './newsletter/newsletter.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { SeedsModule } from './seeds/seeds.module';
     UsersModule,
     AuthModule,
     SeedsModule,
+    NewsletterModule,
     JwtModule.register({
       global: true,
       signOptions: {expiresIn: '1h'},
