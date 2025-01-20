@@ -1,38 +1,46 @@
-import { CanActivate, ExecutionContext, Injectable, UnauthorizedException } from "@nestjs/common";
-import { ConfigService } from "@nestjs/config";
-import { JwtService } from "@nestjs/jwt";
-import { Request } from "express";
-
-@Injectable()
-export class AuthGuard implements CanActivate {
+import {
+    CanActivate,
+    ExecutionContext,
+    Injectable,
+    UnauthorizedException,
+  } from '@nestjs/common';
+  import { ConfigService } from '@nestjs/config';
+  import { JwtService } from '@nestjs/jwt';
+  import { Request } from 'express';
+  
+  @Injectable()
+  export class AuthGuard implements CanActivate {
     constructor(
-        private readonly jwtService: JwtService,
-        private readonly configService: ConfigService,
+      private readonly jwtService: JwtService,
+      private readonly configService: ConfigService,
     ) {}
-
     async canActivate(context: ExecutionContext): Promise<boolean> {
-        const request: Request = context.switchToHttp().getRequest();
-        const token = this.extractToken(request);
-
-        if(!token) {
-            throw new UnauthorizedException('Token no encontrado.')
-        }
-
-        try {
-            const payload = await this.jwtService.verifyAsync(token, {
-                secret: this.configService.get<string>('JWT_SECRET')
-            });
-            request['user'] = payload;
-
-        } catch (error) {
-            throw new UnauthorizedException('Token no válido.') 
-        }
-
+      const request: Request = context.switchToHttp().getRequest();
+      const token = this.extractTokenFromHeader(request);
+  
+      if (!token) {
+        throw new UnauthorizedException('Token no encontrado.');
+      }
+  
+      try {
+        const payload = await this.jwtService.verifyAsync(token, {
+          secret: this.configService.get<string>('JWT_SECRET'),
+        });
+        request['user'] = payload;
         return true;
+      } catch (error) {
+        throw new UnauthorizedException('Token no válido.');
+      }
     }
-
-    private extractToken(request: Request): string {
-        const [ type, token ] = request.headers.authorization?.split(' ') ?? [];
-        return type == 'Bearer' ? token : undefined;
+  
+    private extractTokenFromHeader(request: Request): string {
+      const authorizationHeader = (request.headers as any).authorization;
+      
+      const [type, token] = authorizationHeader?.split(' ') ?? [];
+      
+      if (type === 'Bearer' && token) {
+        return token.replace(/^['"]|['"]$/g, '');
+      }
+            return undefined;
     }
-}
+  }

@@ -47,11 +47,11 @@ export class UserResponseDto {
     location: string;
 
     @ApiProperty({
-        type: Number,
+        type: String,
         description: 'Número de télefono',
         example: '1134256282',
       })
-    phone: number;
+    phone: string;
 
     @ApiProperty({
       type: Date,

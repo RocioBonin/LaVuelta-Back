@@ -8,17 +8,15 @@ import { SignInAuthDto } from "./dto/signin-auth.dto";
 @ApiTags('Auth')
 @Controller('auth')
 export class AuthController {
-    constructor(
-        private authService: AuthServices,
-    ) {}
+  constructor(private authService: AuthServices) {}
 
-    @ApiOperation({ summary: 'Registro del usuario' })
-    @Post('signup')
-    @HttpCode(HttpStatus.CREATED)
-    async signUp ( @Body() signupAuthDto: SignupAuthDto ) {
-        const newUser = await this.authService.signUp( signupAuthDto )
-        return new UserResponseDto(newUser);
-    }
+  @ApiOperation({ summary: 'Registro del usuario' })
+  @Post('signup')
+  @HttpCode(HttpStatus.CREATED)
+  async signUp(@Body() signupAuthDto: SignupAuthDto) {
+    const newUser = await this.authService.signUp(signupAuthDto);
+    return new UserResponseDto(newUser);
+  }
 
     @ApiOperation({ summary: 'Autenticación del usuario y generación del token' })
     @Post('signin')

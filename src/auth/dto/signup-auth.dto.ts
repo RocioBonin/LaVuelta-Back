@@ -83,14 +83,14 @@ export class SignupAuthDto {
     location: string;
 
     @ApiProperty({
-        type: Number,
+        type: String,
         required: true,
         description: 'Número de télefono',
         example: '1134256282',
       })
-    @IsNumber()
+    @IsString()
     @IsNotEmpty()
-    phone: number;
+    phone: string;
 
     @ApiProperty({
         required: true,

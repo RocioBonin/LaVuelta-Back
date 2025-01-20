@@ -8,6 +8,10 @@ import { AuthModule } from './auth/auth.module';
 import { JwtModule } from '@nestjs/jwt';
 import { SeedsModule } from './seeds/seeds.module';
 import { NewsletterModule } from './newsletter/newsletter.module';
+import { AppController } from './app.controller';
+import { AppService } from './app.service';
+import { ProtectedModule } from './protected/protected.module';
+import { PaymentsModule } from './payments/payments.module';
 
 @Module({
   imports: [
@@ -26,13 +30,15 @@ import { NewsletterModule } from './newsletter/newsletter.module';
     AuthModule,
     SeedsModule,
     NewsletterModule,
+    ProtectedModule,
     JwtModule.register({
       global: true,
       signOptions: {expiresIn: '1h'},
       secret: process.env.JWT_SECRET,
-    })
+    }),
+    PaymentsModule,
   ],
-  controllers: [],
-  providers: [],
+  controllers: [AppController],
+  providers: [AppService],
 })
 export class AppModule {}

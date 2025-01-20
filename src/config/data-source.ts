@@ -12,7 +12,7 @@ const PostgresDataSourceOptions: DataSourceOptions = {
   username: process.env.DB_USERNAME,
   password: process.env.DB_PASSWORD,
   synchronize: true,
-  dropSchema: false,
+  dropSchema: true,
   logging: ['error'],
   ssl: process.env.DB_SSL === 'true' ? { rejectUnauthorized: false } : false,
   entities: ['dist/**/*.entity{.ts,.js}'],

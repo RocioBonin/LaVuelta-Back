@@ -23,8 +23,8 @@ export class User {
         type: String,
         description: 'Apellido del usuario',
       })
-    @Column({ length: 50 })
-    surname: string;
+    @Column({ length: 50 , nullable: true})
+    surname?: string;
 
     @ApiProperty({
         type: String,
@@ -37,22 +37,22 @@ export class User {
         type: String,
         description: 'Localidad del usuario',
       })
-    @Column()
-    location: string;
+    @Column({ nullable: true })
+    location?: string;
 
     @ApiProperty({
-        type: Number,
+        type: String,
         description: 'Número de télefono del usuario',
       })
-    @Column()
-    phone: number;
+    @Column({ nullable: true })
+    phone?: string;
 
     @ApiProperty({
         type: Date,
         description: 'Fecha de nacimiento del usuario',
       })
-    @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
-    birthdate: Date;
+    @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' , nullable: true})
+    birthdate?: Date;
 
     @ApiProperty({
         type: String,

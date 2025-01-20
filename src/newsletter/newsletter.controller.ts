@@ -8,7 +8,7 @@ export class NewsletterController {
   constructor(private readonly newsletterService: NewsletterService) {}
 
   @ApiOperation({ summary: 'Suscribe un usuario al newsletter' })
-  @Post('/subscribe')
+  @Post('subscribe')
   @HttpCode(HttpStatus.CREATED)
   async subscribe(@Body() subscribeDto: SubscribeUserDto) {
     return this.newsletterService.subscribe(subscribeDto);

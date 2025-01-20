@@ -80,8 +80,8 @@ export class CreateUserDto {
     description: 'Número de télefono',
     example: '1134256282',
   })
-  @IsNumber()
-  phone: number;
+  @IsString()
+  phone: string;
 
   @ApiProperty({
     description: 'Fecha de nacimiento del usuario',
