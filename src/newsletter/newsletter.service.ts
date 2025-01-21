@@ -25,15 +25,20 @@ export class NewsletterService {
     if (user) {
       if (user.newsletter) {
         throw new ConflictException(
-          'El usuario ya está suscrito al newsletter',
+          'El usuario ya está suscrito al newsletter', 
         );
       }
-      return 'El usuario ya está suscrito al newsletter';
-    }
+
+      user.newsletter = true;
+      await this.userRepository.save(user);
+  
+      return 'El usuario registrado fue suscripto al newsletter';
+    } 
 
     const existingSubscriber = await this.subscriberRepository.findOneBy({
       email,
     });
+
     if (existingSubscriber) {
       throw new ConflictException('El correo ya está suscrito al newsletter');
     }
@@ -51,6 +56,15 @@ export class NewsletterService {
   }
 
   async getUsersSuscriber() {
-     return await this.subscriberRepository.find();
+    const registeredUsers = await this.userRepository.find({
+      where: { newsletter: true },
+      select: ['email'], 
+    });
+
+    const invitedUsers = await this.subscriberRepository.find({
+      select: ['email'],
+    });
+
+    return [...registeredUsers, ...invitedUsers];
   }
 }

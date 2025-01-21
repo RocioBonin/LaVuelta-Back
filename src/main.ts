@@ -3,11 +3,8 @@ import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 import { HttpExceptionFilter } from './middleware/errors.middleware';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import { auth } from 'express-openid-connect';
-import * as session from 'express-session';
-import * as cookieParser from 'cookie-parser';
 import { UserSeeds } from './seeds/users/users.seeds';
-import * as passport from 'passport';
+import { loggerMiddleware } from './middleware/logger.middleware';
 
 
 async function bootstrap() {
@@ -39,6 +36,8 @@ async function bootstrap() {
     origin: ['http://localhost:3000'],
     credentials: true,
   });
+
+  app.use(loggerMiddleware)
 
   await app.listen(process.env.PORT ?? 3000);
 }
