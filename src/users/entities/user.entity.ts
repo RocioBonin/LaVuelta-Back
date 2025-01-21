@@ -23,8 +23,8 @@ export class User {
         type: String,
         description: 'Apellido del usuario',
       })
-    @Column({ length: 50 , nullable: true})
-    surname?: string;
+    @Column({ length: 50})
+    surname: string;
 
     @ApiProperty({
         type: String,
