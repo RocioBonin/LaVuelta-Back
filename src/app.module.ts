@@ -2,15 +2,16 @@ import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { postgresDataSourceConfig } from './config/data-source';
-import { EmailModule } from './email/email.module';
-import { UsersModule } from './users/user.module';
-import { AuthModule } from './auth/auth.module';
+import { EmailModule } from './modules/email/email.module';
+import { UsersModule } from './modules/users/user.module';
+import { AuthModule } from './modules/auth/auth.module';
 import { JwtModule } from '@nestjs/jwt';
-import { SeedsModule } from './seeds/seeds.module';
-import { NewsletterModule } from './newsletter/newsletter.module';
+import { SeedsModule } from './seeders/seeds.module';
+import { NewsletterModule } from './modules/newsletter/newsletter.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { PaymentsModule } from './payments/payments.module';
+import { MercadopagoModule } from './modules/mercadopago/mercadopago.module';
+import { PackageModule } from './modules/package/package.module';
 
 @Module({
   imports: [
@@ -34,7 +35,8 @@ import { PaymentsModule } from './payments/payments.module';
       signOptions: {expiresIn: '1h'},
       secret: process.env.JWT_SECRET,
     }),
-    PaymentsModule,
+    MercadopagoModule,
+    PackageModule,
   ],
   controllers: [AppController],
   providers: [AppService],
