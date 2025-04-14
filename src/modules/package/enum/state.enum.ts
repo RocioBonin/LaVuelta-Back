@@ -1,5 +1,5 @@
 export enum State {
-    PENDING = 'PENDING',
-    IN_TRANSIT = 'IN_TRANSIT',
-    DELIVERED = 'DELIVERED',
+    DEPOSIT = 'DEPOSITO',
+    IN_TRANSIT = 'EN_CAMINO',
+    DELIVERED = 'ENTREGADO',
 }

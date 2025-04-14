@@ -26,7 +26,7 @@ export class Package {
     @Column({ nullable: true })
     deliveryDate?: Date;
 
-    @Column({type: 'enum', enum: State, default: State.PENDING})
+    @Column({type: 'enum', enum: State, default: State.DEPOSIT})
     status: State;
 
     @ManyToOne(() => User, (user) => user.packages)
