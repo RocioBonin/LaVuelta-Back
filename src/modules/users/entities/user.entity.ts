@@ -7,7 +7,7 @@ import { Package } from "src/modules/package/entities/package.entity";
 @Entity({name: 'users'})
 export class User {
     @PrimaryGeneratedColumn('uuid')
-    id: string = uuid();
+    id: string;
 
     @Column({ length: 50 })
     name: string;
@@ -27,7 +27,7 @@ export class User {
     @Column({ unique: true })
     phone: string;
 
-    @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP'})
+    @Column()
     birthdate: Date;
 
     @Column({ unique: true })
@@ -37,7 +37,7 @@ export class User {
     password: string;
 
     @Column({ type: 'enum', enum: Role, default: Role.User })
-    role: Role;
+    role?: Role;
 
     @DeleteDateColumn()
     disabledAt?: Date;
@@ -46,7 +46,7 @@ export class User {
     createAt: Date;
 
     @Column({default: false})
-    newsletter: boolean;
+    newsletter?: boolean;
 
     @OneToMany(() => Payment, (payment) => payment.user)
     payments: Payment[];

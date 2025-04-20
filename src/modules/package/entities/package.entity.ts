@@ -1,12 +1,11 @@
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { State } from "../enum/state.enum";
-import { v4 as uuid } from 'uuid';
 import { User } from "src/modules/users/entities/user.entity";
 
 @Entity('packages')
 export class Package {
     @PrimaryGeneratedColumn('uuid')
-    id: string = uuid();
+    id: string;
 
     @Column({ unique: true })
     packageNumber: string;
@@ -17,7 +16,7 @@ export class Package {
     @Column({ nullable: true })
     clientName?: string;
 
-    @Column()
+    @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP'})
     receivedDate: Date;
 
     @Column({ nullable: true })

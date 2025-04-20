@@ -71,7 +71,9 @@ export class UserService {
   }
 
   async getAllUsers() {
-    return await this.userRepository.find();
+    return await this.userRepository.find({
+      relations: ['packages']
+    });
   }
 
   async getUserByRole(userRole: Role) {
@@ -95,7 +97,7 @@ export class UserService {
     });
   
     if (!user) {
-      throw new NotFoundException("No se un usuario con el nombre indicado.");
+      throw new NotFoundException("No se encontro un usuario con el nombre indicado.");
     }
   
     return user; 
@@ -158,6 +160,15 @@ export class UserService {
 
     if (!user) {
       throw new NotFoundException('Usuario desactivado no encontrado');
+    }
+
+    return user;
+  }
+
+  async getUserById(userId: string) {
+    const user = await this.userRepository.findOne({where: {id: userId}});
+    if (!user) {
+      throw new NotFoundException('Usuario no encontrado');
     }
 
     return user;

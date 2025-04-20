@@ -1,5 +1,6 @@
-import { IsString, IsDate, IsEnum, IsOptional, IsNotEmpty, IsDateString} from 'class-validator';
+import { IsString, IsEnum, IsOptional, IsNotEmpty, IsDateString, IsDate} from 'class-validator';
 import { State } from '../enum/state.enum';
+import { Type } from 'class-transformer';
 
 export class CreatePackageDto {
   @IsString()
@@ -12,18 +13,25 @@ export class CreatePackageDto {
 
   @IsOptional()
   @IsString()
-  clientName: string;
+  clientName?: string;
 
+  @IsString()
   @IsNotEmpty()
-  @IsDateString()
-  receivedDate: Date;
+  userId: string;
 
   @IsOptional()
-  @IsDateString()
+  @IsDate()
+  @Type(() => Date)
+  receivedDate?: Date;
+
+  @IsOptional()
+  @IsDate()
+  @Type(() => Date)
   emissionDate?: Date;
 
   @IsOptional()
-  @IsDateString()
+  @IsDate()
+  @Type(() => Date)
   deliveryDate?: Date;
 
   @IsOptional()

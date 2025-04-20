@@ -23,42 +23,47 @@ export class PackageService {
     }
 
     async createPackage(createPackageDto: CreatePackageDto) {
-        const { companyName, clientName, packageNumber } = createPackageDto;
+        const { companyName, clientName, packageNumber , userId} = createPackageDto;
       
         const searchTerm = companyName || clientName;
-      
         if (!searchTerm) {
           throw new BadRequestException('Debe proporcionar un nombre de cliente o empresa');
         }
-
-        const existingPackageNumber = await this.packageRepository.findOne({where: {packageNumber}});
-        if( existingPackageNumber.packageNumber === packageNumber ) {
-            throw new ConflictException(
-                      'El número de paquete ya se encuentra registrado',
-                    );
-        }
       
-        const user = await this.userService.getUserByName(searchTerm);
-      
-        const packageEntity = this.packageRepository.create({
-          ...createPackageDto,
-          user,
+        const existingPackage = await this.packageRepository.findOne({
+          where: { packageNumber },
         });
       
-        return await this.packageRepository.save(packageEntity);
-    }
+        if (existingPackage) {
+          throw new ConflictException('El número de paquete ya se encuentra registrado');
+        }
+      
+        const user = await this.userService.getUserById(userId);
+
+        if(user.name === clientName || user.companyName === companyName) {
+            const newPackage = this.packageRepository.create({
+                ...createPackageDto,
+                user,
+              });
+            
+              return await this.packageRepository.save(newPackage);
+        }
+
+        throw new BadRequestException('El nombre proporcionado no coincide con el usuario indicado');
+      }
+      
 
     async removePackage(id: string) {
         const pkg = await this.packageById(id);
 
         await this.packageRepository.remove(pkg);
-        return { message: 'Usuario eliminado correctamente.' };
+        return { message: 'Paquete eliminado correctamente.' };
     }
 
     async packageById(id: string) {
         const pkg = await this.packageRepository.findOne({
             where: {id},
-            relations: ['users']
+            relations: ['user']
         })
 
         if(!pkg) {

@@ -2,6 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { Role } from '../enum/role.enum';
 import {
   IsBoolean,
+  IsDate,
   IsDateString,
   IsEmail,
   IsEnum,
@@ -12,6 +13,7 @@ import {
   Length,
   Matches,
 } from 'class-validator';
+import { Type } from 'class-transformer';
 
 export class CreateUserDto {
   @ApiProperty({
@@ -36,7 +38,7 @@ export class CreateUserDto {
 
   @ApiProperty({
     type: String,
-    description: 'Nombre de la compañia'
+    description: 'Nombre de la compañia',
   })
   @IsString()
   @IsOptional()
@@ -99,13 +101,14 @@ export class CreateUserDto {
     description: 'Fecha de nacimiento del usuario',
     example: '2025-01-03',
   })
-  @IsDateString()
-  birthdate: string;
+  @IsDate()
+  @Type(() => Date)
+  birthdate: Date;
 
   @ApiProperty({
     enum: Role,
     description: 'Rol asignado al usuario',
-    default: Role.User
+    default: Role.User,
   })
   @IsEnum(Role)
   @IsOptional()
@@ -122,12 +125,11 @@ export class CreateUserDto {
   newsletter?: boolean;
 
   @ApiProperty({
-    description:'Indica si la cuenta del usuario está activa.',
+    description: 'Indica si la cuenta del usuario está activa.',
     default: true,
     example: true,
   })
   @IsBoolean()
   @IsOptional()
   isActive?: boolean;
-
 }

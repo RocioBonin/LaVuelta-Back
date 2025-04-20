@@ -44,6 +44,6 @@ export class PackageController {
     @ApiResponse({ status: 404, description: 'Paquete no encontrado' })
     @Get(':id')
     async getPackageById(@Param('id') id: string) {
-        return await this.getPackageById(id);
+        return await this.packageService.packageById(id);
     }
 }
