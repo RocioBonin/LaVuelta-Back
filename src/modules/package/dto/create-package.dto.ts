@@ -1,4 +1,4 @@
-import { IsString, IsEnum, IsOptional, IsNotEmpty, IsDateString, IsDate} from 'class-validator';
+import { IsString, IsEnum, IsOptional, IsNotEmpty, IsDate} from 'class-validator';
 import { State } from '../enum/state.enum';
 import { Type } from 'class-transformer';
 

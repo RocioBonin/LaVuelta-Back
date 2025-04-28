@@ -1,50 +1,58 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Package } from 'src/modules/package/entities/package.entity';
 import { Repository } from 'typeorm';
+import { Package } from 'src/modules/package/entities/package.entity';
+import { State } from 'src/modules/package/enum/state.enum';
+import { User } from 'src/modules/users/entities/user.entity';
+import { Role } from 'src/modules/users/enum/role.enum';
 
 @Injectable()
 export class PackagesSeeds {
   constructor(
     @InjectRepository(Package)
     private readonly packageRepository: Repository<Package>,
+
+    @InjectRepository(User)
+    private readonly userRepository: Repository<User>
   ) {}
 
-  async seedPackages() {
+  async run() {
+    const users = await this.userRepository.find({ where: { role: Role.User } });
+
     const packages = [
-      {
-        packageNumber: '76549354',
-        clientName: 'Jane Smith',
-        receivedDate: '2001-01-03',
-      },
-      {
-        packageNumber: '765435678',
-        companyName: 'Nike S.A',
-        receivedDate: '2001-01-04',
-      },
+      { packageNumber: 'PKG-100', receivedDate: new Date(2024, 3, 10) },
+      { packageNumber: 'PKG-101', receivedDate: new Date(2024, 3, 11) },
+      { packageNumber: 'PKG-102', receivedDate: new Date(2024, 3, 12) },
+      { packageNumber: 'PKG-103', receivedDate: new Date(2024, 3, 13) },
+      { packageNumber: 'PKG-104', receivedDate: new Date(2024, 3, 14) },
+      { packageNumber: 'PKG-105', receivedDate: new Date(2024, 3, 15) },
+      { packageNumber: 'PKG-106', receivedDate: new Date(2024, 3, 16) },
+      { packageNumber: 'PKG-107', receivedDate: new Date(2024, 3, 17) },
+      { packageNumber: 'PKG-108', receivedDate: new Date(2024, 3, 18) },
+      { packageNumber: 'PKG-109', receivedDate: new Date(2024, 3, 19) },
     ];
 
-    try {
-      for (const packageData of packages) {
-        const { packageNumber, ...rest } = packageData;
+    for (let i = 0; i < packages.length; i++) {
+      const existing = await this.packageRepository.findOne({
+        where: { packageNumber: packages[i].packageNumber },
+      });
 
-        const existingPackageNumber = await this.packageRepository.findOne({
-          where: { packageNumber },
-        });
+      if (existing) continue;
 
-        if (!existingPackageNumber) {
-          const newPackage = this.packageRepository.create({
-            ...rest,
-            packageNumber: packageNumber,
-          });
+      const user = users[i]; // 1:1 relación con los usuarios definidos arriba
 
-          await this.packageRepository.save(newPackage);
-        }
-      }
+      const pkg = this.packageRepository.create({
+        ...packages[i],
+        clientName: `${user.fullname}`,
+        status: State.DEPOSIT,
+        user,
+      });
 
-      console.log('Preload de paquetes exitoso!');
-    } catch (error) {
-      console.error('Error en la precarga de paquetes:', error);
+      await this.packageRepository.save(pkg);
     }
+
+    console.log('Paquetes cargados correctamente.');
   }
 }
+
+

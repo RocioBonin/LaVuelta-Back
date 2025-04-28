@@ -1,11 +1,10 @@
-import { NestFactory } from '@nestjs/core';
+import { NestFactory, Reflector } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { ValidationPipe } from '@nestjs/common';
+import { ClassSerializerInterceptor, ValidationPipe } from '@nestjs/common';
 import { HttpExceptionFilter } from './common/middleware/errors.middleware';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { UsersSeeds } from './seeders/user/user.seeds';
 import { loggerMiddleware } from './common/middleware/logger.middleware';
-import { DateFormatInterceptor } from './common/interceptor/date-format.interceptor';
 import { PackagesSeeds } from './seeders/package/package.seeds';
 
 async function bootstrap() {
@@ -19,11 +18,13 @@ async function bootstrap() {
     }),
   );
 
+  app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
+
   const usersSeed = app.get(UsersSeeds);
-  await usersSeed.seedUsers();
+  await usersSeed.run();
   
-  const packagesSeed = app.get(PackagesSeeds);
-  await packagesSeed.seedPackages();
+  /* const packagesSeed = app.get(PackagesSeeds);
+  await packagesSeed.run(); */
 
   app.useGlobalFilters(new HttpExceptionFilter());
 
@@ -43,7 +44,6 @@ async function bootstrap() {
   });
 
   app.use(loggerMiddleware);
-  app.useGlobalInterceptors(new DateFormatInterceptor());
 
   await app.listen(process.env.PORT ?? 3000);
 }

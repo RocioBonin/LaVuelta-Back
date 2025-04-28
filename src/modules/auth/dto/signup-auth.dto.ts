@@ -1,8 +1,8 @@
 import { ApiProperty} from "@nestjs/swagger";
-import { IsNotEmpty, IsString, IsStrongPassword, Matches } from "class-validator";
+import { IsNotEmpty, IsStrongPassword, Matches } from "class-validator";
 import { CreateUserDto } from "src/modules/users/dto/create-user.dto";
 
-export class SignUpAuthDto extends CreateUserDto{
+export class SignUpAuthDto extends CreateUserDto {
     @ApiProperty({
               type: String,
               required: true,

@@ -8,6 +8,8 @@ import { Role } from './enum/role.enum';
 import { CreateUserDto } from './dto/create-user.dto';
 import { hash } from 'bcrypt';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { plainToInstance } from 'class-transformer';
+import { UserResponseDto } from './dto/user-response.dto';
 
 @Injectable()
 export class UserService {
@@ -25,7 +27,7 @@ export class UserService {
       phone
     } = createUserDto;
 
-    const existingUser = await this.userRepository.findOne({ where: [{ email }]});
+    const existingUser = await this.findEmail(email);
 
     if (existingUser) {
 
@@ -46,9 +48,7 @@ export class UserService {
       };
     };
 
-    const userDisabled = await this.userByEmailByDisabled(email);
-
-    if(userDisabled?.disabledAt) {
+    if(existingUser?.disabledAt) {
       throw new ConflictException('El correo electrónico esta deshabilitado');
     }
 
@@ -61,116 +61,161 @@ export class UserService {
 
     await this.userRepository.save(newUser);
 
-    const message = emailHtml.replace('{{userName}}', newUser.name);
+    const message = emailHtml.replace('{{userName}}', newUser.fullname);
     const to = [newUser.email];
     const subject = 'Mensaje de bienvenida';
 
     await this.emailService.sendWelcomeEmail({ message, to, subject });
 
-    return newUser;
+    return plainToInstance(UserResponseDto, newUser, {
+      excludeExtraneousValues: true,
+    });
   }
 
-  async getAllUsers() {
-    return await this.userRepository.find({
-      relations: ['packages']
+  async getAllUsers(): Promise<UserResponseDto[]> {
+    const users = await this.userRepository.find({
+      relations: ['packages'],
+    });
+  
+    return plainToInstance(UserResponseDto, users, {
+      excludeExtraneousValues: true,
     });
   }
 
   async getUserByRole(userRole: Role) {
+    if (!Object.values(Role).includes(userRole)) {
+      throw new BadRequestException('Debe ingresar un rol válido');
+    } 
+
     const user = await this.userRepository.find({
       where: { role: userRole }
     });
 
     if(!user) {
       throw new NotFoundException('No se encuentran usuarios con el rol ingresado');
-    }
+    }   
 
-    return user;
+    return plainToInstance(UserResponseDto, user, {
+      excludeExtraneousValues: true,
+    });
   }
 
-  async getUserByName(name: string) {
-    const user = await this.userRepository.findOne({
-      where: [
-        { name },    
-        { companyName: name }
-      ]
-    });
+  async getUserByName(fullname: string) {
+    const user = await this.userRepository.findOne({where: { fullname: fullname }});
   
     if (!user) {
       throw new NotFoundException("No se encontro un usuario con el nombre indicado.");
     }
   
-    return user; 
+    return plainToInstance(UserResponseDto, user, {
+      excludeExtraneousValues: true,
+    }); 
   }
   
   async findEmail(email: string) {
-    return await this.userRepository.findOne({ where: { email } });
-  }
-
-  async userByEmailByDisabled(email: string) {
-    const user = await this.userRepository.findOne({
-      where: { email },
-      withDeleted: true,
+    const user = await this.userRepository.findOne({ where: { email } });
+    
+    return plainToInstance(UserResponseDto, user, {
+      excludeExtraneousValues: true,
     });
-  
-    return user; 
   }
 
   async updateUser(id: string, updateUserDto: UpdateUserDto) {
-    const user = await this.userRepository.findOne({ where: { id } });
-  
-    if (!user) {
-      throw new NotFoundException(`Usuario con ID ${id} no encontrado`);
-    }
+    const user = await this.getUserById(id);
   
     Object.assign(user, updateUserDto);
   
-    return await this.userRepository.save(user); 
+    const updateUser = await this.userRepository.save(user); 
+
+    return plainToInstance(UserResponseDto, updateUser, {
+      excludeExtraneousValues: true,
+    });
   }
   
-  async removeUser(id: string) {
+  async deletedUser(id: string) {
     const user = await this.userRepository.findOne({ where: { id } });
     await this.userRepository.remove(user);
     return { message: 'Usuario eliminado correctamente.' };
   }
 
-  async softDeleteUser(id: string) {
-    await this.userRepository.softDelete(id);
-    return { message: 'Se desactivo correctamente' };
+  async disableUser(id: string) {
+    const user = await this.getUserById(id);
+
+    if(user.disabledAt) {
+      throw new BadRequestException('El usuario ya está deshabilitado');
+    }
+
+    user.disabledAt = new Date();
+
+    await this.userRepository.save(user);
+
+    return { message: 'Usuario desactivado correctamente' };
   }
 
   async restore(id: string) {
     const user = await this.findDisabledUserById(id);
     if (user && user.disabledAt !== null) {
-      await this.userRepository.restore(id);
-      return { message: 'Se restauro correctamente' };
+      user.disabledAt = null;
+      await this.userRepository.save(user);
+      return { message: 'Usuario restaurado correctamente' };
     }
     throw new BadRequestException('El usuario indicado ya se encuentra activo');
   }
 
-  async findAllWhitDeleted() {
-    return await this.userRepository.find({withDeleted:true});
-  }
-
-  async findDisabledUserById(userId: string): Promise<User | null> {
+  async findDisabledUserById(userId: string): Promise<UserResponseDto | null> {
     const user = await this.userRepository.findOne({
-      where: { id: userId, disabledAt: Not(IsNull()) },
-      withDeleted: true,
+      where: { id: userId, disabledAt: Not(IsNull()) }
     });
 
     if (!user) {
       throw new NotFoundException('Usuario desactivado no encontrado');
     }
 
-    return user;
+    return plainToInstance(UserResponseDto, user, {
+      excludeExtraneousValues: true,
+    });
   }
 
   async getUserById(userId: string) {
-    const user = await this.userRepository.findOne({where: {id: userId}});
+    const user = await this.userRepository.findOne(
+      {
+        where: {id: userId},
+        relations: ['packages']
+      }
+    );
+    
     if (!user) {
       throw new NotFoundException('Usuario no encontrado');
     }
 
-    return user;
+    return plainToInstance(UserResponseDto, user, {
+      excludeExtraneousValues: true,
+    });
+  }
+
+  async assignAdmin(userId: string): Promise<{ message: string }> {
+    const user = await this.userRepository.findOne({where: {id: userId}});
+
+    if (user.role === Role.Admin) {
+      throw new ConflictException('El usuario ya es administrador');
+    }
+  
+    user.role = Role.Admin;
+    await this.userRepository.save(user);
+
+    return { message: 'Rol de administrador asignado correctamente' };
+  }
+
+  async removeAdmin(userId: string): Promise<{ message: string }> {
+    const user = await this.userRepository.findOneBy({ id: userId });
+  
+    if (user.role !== Role.Admin) {
+      throw new ConflictException('El usuario no es administrador');
+    }
+  
+    user.role = Role.User;
+    await this.userRepository.save(user);
+  
+    return { message: 'Rol de administrador removido correctamente' };
   }
 }

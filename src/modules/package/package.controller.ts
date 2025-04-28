@@ -16,12 +16,12 @@ export class PackageController {
         return await this.packageService.getPackages();
     }
 
-    @ApiOperation({ summary: 'Crear un nuevo paquete' })
+   /*  @ApiOperation({ summary: 'Crear un nuevo paquete' })
     @ApiResponse({ status: 201, description: 'Paquete creado exitosamente' })
     @Post()
     async createPackage(@Body() createPackageDto: CreatePackageDto) {
         return await this.packageService.createPackage(createPackageDto);
-    }
+    } */
 
     @ApiOperation({ summary: 'Eliminar un paquete por ID' })
     @ApiResponse({ status: 200, description: 'Paquete eliminado exitosamente' })

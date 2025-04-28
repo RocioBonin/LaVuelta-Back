@@ -12,18 +12,20 @@ export class PackageService {
         @InjectRepository(Package)
         private packageRepository: Repository<Package>,
 
-        private readonly userService: UserService
+        private readonly userService: UserService,
     ) {}
     
     async getPackages() {
         const packages = await this.packageRepository.find({
             relations: ['user']
         });
+
+        if(!packages)  throw new NotFoundException('Paquetes no encontrados');
         return packages;
     }
 
-    async createPackage(createPackageDto: CreatePackageDto) {
-        const { companyName, clientName, packageNumber , userId} = createPackageDto;
+    /* async createPackage(createPackageDto: CreatePackageDto) {
+        const {clientName, packageNumber , userId} = createPackageDto;
       
         const searchTerm = companyName || clientName;
         if (!searchTerm) {
@@ -40,7 +42,7 @@ export class PackageService {
       
         const user = await this.userService.getUserById(userId);
 
-        if(user.name === clientName || user.companyName === companyName) {
+        if(user.name === clientName) {
             const newPackage = this.packageRepository.create({
                 ...createPackageDto,
                 user,
@@ -50,7 +52,7 @@ export class PackageService {
         }
 
         throw new BadRequestException('El nombre proporcionado no coincide con el usuario indicado');
-      }
+      } */
       
 
     async removePackage(id: string) {
