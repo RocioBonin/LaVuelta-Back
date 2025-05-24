@@ -66,22 +66,6 @@ export class UserController {
     return await this.userService.getUserByRole(userRole);
   }
 
-  @ApiOperation({ summary: 'Buscar usuario desactivado por ID' })
-  @ApiResponse({
-    status: 200,
-    description: 'Usuario desactivado encontrado.',
-    type: User,
-  })
-  @ApiResponse({
-    status: 404,
-    description: 'Usuario desactivado no encontrado.',
-  })
-  @HttpCode(HttpStatus.OK)
-  @Get(':id/findDisabledById')
-  async findDisabledUserById(@Param('id') userId: string) {
-    return await this.userService.findDisabledUserById(userId);
-  }
-
   @ApiOperation({ summary: 'Actualizar un usuario por ID' })
   @ApiResponse({
     status: 200,
@@ -112,31 +96,6 @@ export class UserController {
   @Delete(':id')
   async deletedUser(@Param('id') id: string) {
     return await this.userService.deletedUser(id);
-  }
-
-  @ApiOperation({ summary: 'Desactivar usuario' })
-  @ApiResponse({
-    status: 200,
-    description: 'Usuario desactivado correctamente.',
-  })
-  @Delete(':id/disabled')
-  async disableUser(@Param('id') id: string) {
-    return await this.userService.disableUser(id);
-  }
-
-  @ApiOperation({ summary: 'Restaurar usuario desactivado' })
-  @ApiResponse({
-    status: 200,
-    description: 'Usuario restaurado correctamente.',
-  })
-  @ApiResponse({
-    status: 400,
-    description: 'El usuario ya se encuentra activo.',
-  })
-  @Patch(':id/restore')
-  @HttpCode(HttpStatus.OK)
-  async restore(@Param('id') id: string) {
-    return await this.userService.restore(id);
   }
 
   @ApiOperation({ summary: 'Asignar rol de Admin a un Usuario' })

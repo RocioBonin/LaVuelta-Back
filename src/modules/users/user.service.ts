@@ -52,10 +52,6 @@ export class UserService {
       };
     };
 
-    if(existingUser?.disabledAt) {
-      throw new ConflictException('El correo electrónico esta deshabilitado');
-    }
-
     plainPassword = randomBytes(8).toString('hex');
 
     const newUser = this.userRepository.create({
@@ -143,44 +139,6 @@ export class UserService {
     const user = await this.userRepository.findOne({ where: { id } });
     await this.userRepository.remove(user);
     return { message: 'Usuario eliminado correctamente.' };
-  }
-
-  async disableUser(id: string) {
-    const user = await this.getUserById(id);
-
-    if(user.disabledAt) {
-      throw new BadRequestException('El usuario ya está deshabilitado');
-    }
-
-    user.disabledAt = new Date();
-
-    await this.userRepository.save(user);
-
-    return { message: 'Usuario desactivado correctamente' };
-  }
-
-  async restore(id: string) {
-    const user = await this.findDisabledUserById(id);
-    if (user && user.disabledAt !== null) {
-      user.disabledAt = null;
-      await this.userRepository.save(user);
-      return { message: 'Usuario restaurado correctamente' };
-    }
-    throw new BadRequestException('El usuario indicado ya se encuentra activo');
-  }
-
-  async findDisabledUserById(userId: string): Promise<UserResponseDto | null> {
-    const user = await this.userRepository.findOne({
-      where: { id: userId, disabledAt: Not(IsNull()) }
-    });
-
-    if (!user) {
-      throw new NotFoundException('Usuario desactivado no encontrado');
-    }
-
-    return plainToInstance(UserResponseDto, user, {
-      excludeExtraneousValues: true,
-    });
   }
 
   async getUserById(userId: string) {

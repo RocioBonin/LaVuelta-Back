@@ -34,11 +34,4 @@ export class UserResponseDto {
 
   @Expose()
   createdAt: Date;
-
-  @Expose()
-  disabledAt: Date | null;
-
-  @Expose()
-  @Transform(({ obj }) => obj.disabledAt === null)
-  isActive: boolean;
 }

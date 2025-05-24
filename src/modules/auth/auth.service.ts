@@ -42,13 +42,6 @@ export class AuthServices {
       );
     }
 
-    if(user.disabledAt){
-      throw new HttpException(
-        'Cuenta desactivada',
-        HttpStatus.UNAUTHORIZED,
-      );
-    }
-
     const userPayload = {
       id: user.id,
       email: user.email,

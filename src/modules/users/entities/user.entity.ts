@@ -36,9 +36,6 @@ export class User {
     @Column({ type: 'enum', enum: Role, default: Role.Client })
     role: Role;
 
-    @Column({ type: 'timestamp', nullable: true })
-    disabledAt: Date | null;
-
     @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
     createdAt: Date;
 
