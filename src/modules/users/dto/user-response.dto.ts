@@ -2,6 +2,9 @@ import { Expose } from 'class-transformer';
 
 export class UserResponseDto {
   @Expose()
+  id: string;
+
+  @Expose()
   fullName: string;
 
   @Expose()
@@ -14,11 +17,11 @@ export class UserResponseDto {
   address: string;
 
   @Expose()
+  company: string;
+
+  @Expose()
   phone: string;
 
   @Expose()
   birthdate: Date;
-
-  @Expose()
-  company: string;
 }
