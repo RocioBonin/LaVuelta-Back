@@ -1,12 +1,10 @@
 import { BadRequestException, ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
-import { IsNull, Not, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { EmailService } from 'src/modules/email/email.service';
-import { emailHtml } from 'src/modules/email/templates/email-newsletter';
 import { Role } from './enum/role.enum';
 import { CreateUserDto } from './dto/create-user.dto';
-import { hash } from 'bcrypt';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { plainToInstance } from 'class-transformer';
 import { UserResponseDto } from './dto/user-response.dto';
@@ -25,7 +23,6 @@ export class UserService {
     const {
       email,
       password,
-      dni,
       phone
     } = createUserDto;
 
@@ -37,12 +34,6 @@ export class UserService {
 
       if (existingUser.email === email) {
         throw new ConflictException('El correo electrónico ya está registrado');
-      }
-
-      if (existingUser.dni === dni) {
-        throw new ConflictException(
-          'El documento de identidad ya esta registrado',
-        );
       }
 
       if(existingUser.phone === phone) {
