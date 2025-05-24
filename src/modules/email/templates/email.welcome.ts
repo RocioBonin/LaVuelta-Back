@@ -23,7 +23,7 @@ export const emailHtmlWithPassword = `
       box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     }
     .header {
-      background-color: #24BA63;
+      background-color: #0C1177;
       color: white;
       text-align: center;
       padding: 20px;
@@ -36,7 +36,7 @@ export const emailHtmlWithPassword = `
     .password-box {
       background-color: #f1f1f1;
       padding: 15px;
-      border-left: 4px solid #24BA63;
+      border-left: 4px solid #0C1177;
       margin: 20px 0;
       font-size: 16px;
     }
