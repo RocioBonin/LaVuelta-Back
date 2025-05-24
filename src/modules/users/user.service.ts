@@ -3,13 +3,15 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
 import { IsNull, Not, Repository } from 'typeorm';
 import { EmailService } from 'src/modules/email/email.service';
-import { emailHtml } from 'src/modules/email/templates/email-welcome';
+import { emailHtml } from 'src/modules/email/templates/email-newsletter';
 import { Role } from './enum/role.enum';
 import { CreateUserDto } from './dto/create-user.dto';
 import { hash } from 'bcrypt';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { plainToInstance } from 'class-transformer';
 import { UserResponseDto } from './dto/user-response.dto';
+import { randomBytes } from 'crypto';
+import { emailHtmlWithPassword } from '../email/templates/email.welcome';
 
 @Injectable()
 export class UserService {
@@ -23,9 +25,11 @@ export class UserService {
     const {
       email,
       password,
-      idNumber,
+      dni,
       phone
     } = createUserDto;
+
+    let plainPassword = password;
 
     const existingUser = await this.findEmail(email);
 
@@ -35,7 +39,7 @@ export class UserService {
         throw new ConflictException('El correo electrónico ya está registrado');
       }
 
-      if (existingUser.idNumber === idNumber) {
+      if (existingUser.dni === dni) {
         throw new ConflictException(
           'El documento de identidad ya esta registrado',
         );
@@ -52,18 +56,21 @@ export class UserService {
       throw new ConflictException('El correo electrónico esta deshabilitado');
     }
 
-    const hashedPassword = await hash(password, 10)
+    plainPassword = randomBytes(8).toString('hex');
 
     const newUser = this.userRepository.create({
       ...createUserDto,
-      password: hashedPassword
+      password: plainPassword,
     });
 
     await this.userRepository.save(newUser);
 
-    const message = emailHtml.replace('{{userName}}', newUser.fullname);
+    const message = emailHtmlWithPassword
+    .replace('{{userName}}', newUser.fullName)
+    .replace('{{password}}', plainPassword);
+
     const to = [newUser.email];
-    const subject = 'Mensaje de bienvenida';
+    const subject = 'Tu cuenta ha sido creada en La Vuelta Logística';
 
     await this.emailService.sendWelcomeEmail({ message, to, subject });
 
@@ -100,8 +107,8 @@ export class UserService {
     });
   }
 
-  async getUserByName(fullname: string) {
-    const user = await this.userRepository.findOne({where: { fullname: fullname }});
+  async getUserByName(fullName: string) {
+    const user = await this.userRepository.findOne({where: { fullName: fullName }});
   
     if (!user) {
       throw new NotFoundException("No se encontro un usuario con el nombre indicado.");
@@ -213,7 +220,7 @@ export class UserService {
       throw new ConflictException('El usuario no es administrador');
     }
   
-    user.role = Role.User;
+    user.role = Role.Client;
     await this.userRepository.save(user);
   
     return { message: 'Rol de administrador removido correctamente' };

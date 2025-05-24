@@ -9,15 +9,7 @@ export class CreatePackageDto {
 
   @IsOptional()
   @IsString()
-  companyName?: string;
-
-  @IsOptional()
-  @IsString()
   clientName?: string;
-
-  @IsString()
-  @IsNotEmpty()
-  userId: string;
 
   @IsOptional()
   @IsDate()

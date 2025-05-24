@@ -6,19 +6,22 @@ export class UserResponseDto {
   id: string;
 
   @Expose()
-  fullname: string;
+  fullName: string;
+
+  @Expose()
+  company: string;
 
   @Expose()
   email: string;
 
   @Expose()
-  idNumber: string;
+  dni: string;
 
   @Expose()
   phone: string;
 
   @Expose()
-  location: string;
+  address: string;
 
   @Expose()
   birthdate: Date;

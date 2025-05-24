@@ -3,12 +3,12 @@ import { UserService } from 'src/modules/users/user.service';
 import * as bcrypt from 'bcryptjs';
 import { SignInAuthDto } from './dto/signin-auth.dto';
 import { JwtService } from '@nestjs/jwt';
-import { SignUpAuthDto } from './dto/signup-auth.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from '../users/entities/user.entity';
 import { plainToInstance } from 'class-transformer';
 import { UserResponseDto } from '../users/dto/user-response.dto';
+import { CreateUserDto } from '../users/dto/create-user.dto';
 
 @Injectable()
 export class AuthServices {
@@ -19,11 +19,7 @@ export class AuthServices {
     private readonly userRepository: Repository<User>,
   ) {}
 
-  async signUp(signUpAuthDto: SignUpAuthDto) {
-    if (signUpAuthDto.password !== signUpAuthDto.repeatPassword) {
-      throw new HttpException('Las contraseñas no coinciden', 400);
-    }
-
+  async signUp(signUpAuthDto: CreateUserDto) {
     return await this.usersService.createUser(signUpAuthDto);
   }
 

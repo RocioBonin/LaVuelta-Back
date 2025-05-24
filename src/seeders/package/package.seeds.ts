@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+/* import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Package } from 'src/modules/package/entities/package.entity';
@@ -53,6 +53,6 @@ export class PackagesSeeds {
 
     console.log('Paquetes cargados correctamente.');
   }
-}
+} */
 
 

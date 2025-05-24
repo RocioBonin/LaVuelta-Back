@@ -11,7 +11,7 @@ import { NewsletterModule } from './modules/newsletter/newsletter.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { MercadopagoModule } from './modules/mercadopago/mercadopago.module';
-import { PackageModule } from './modules/package/package.module';
+/* import { PackageModule } from './modules/package/package.module'; */
 
 @Module({
   imports: [
@@ -36,7 +36,7 @@ import { PackageModule } from './modules/package/package.module';
       secret: process.env.JWT_SECRET,
     }),
     MercadopagoModule,
-    PackageModule,
+   /*  PackageModule, */
   ],
   controllers: [AppController],
   providers: [AppService],

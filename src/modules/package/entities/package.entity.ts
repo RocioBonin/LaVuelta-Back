@@ -11,9 +11,6 @@ export class Package {
     packageNumber: string;
 
     @Column({ nullable: true })
-    companyName?: string;
-
-    @Column({ nullable: true })
     clientName?: string;
 
     @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP'})

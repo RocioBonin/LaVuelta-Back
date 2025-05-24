@@ -9,13 +9,20 @@ export class User {
     id: string;
 
     @Column({ length: 50 })
-    fullname: string;
+    fullName: string;
 
     @Column({ unique: true })
-    idNumber: string;
+    email: string;
+
+    @Column({ unique: true })
+    dni: string;
+
+    @Exclude()
+    @Column()
+    password: string;
 
     @Column()
-    location: string;
+    address: string;
 
     @Column({ unique: true })
     phone: string;
@@ -23,14 +30,10 @@ export class User {
     @Column()
     birthdate: Date;
 
-    @Column({ unique: true })
-    email: string;
-
-    @Exclude()
     @Column()
-    password: string;
+    company: string;
 
-    @Column({ type: 'enum', enum: Role, default: Role.User })
+    @Column({ type: 'enum', enum: Role, default: Role.Client })
     role: Role;
 
     @Column({ type: 'timestamp', nullable: true })

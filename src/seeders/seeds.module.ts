@@ -4,13 +4,13 @@ import { User } from "src/modules/users/entities/user.entity";
 import { JwtModule } from "@nestjs/jwt";
 import { Package } from "src/modules/package/entities/package.entity";
 import { UsersSeeds } from "./user/user.seeds";
-import { PackagesSeeds } from "./package/package.seeds";
+/* import { PackagesSeeds } from "./package/package.seeds"; */
 
 @Module({
     imports:[TypeOrmModule.forFeature([User, Package]),
     JwtModule,
 ],
-    providers: [UsersSeeds, PackagesSeeds],
+    providers: [UsersSeeds/* , PackagesSeeds */],
     exports: [UsersSeeds],
 })
 

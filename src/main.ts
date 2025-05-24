@@ -5,7 +5,7 @@ import { HttpExceptionFilter } from './common/middleware/errors.middleware';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { UsersSeeds } from './seeders/user/user.seeds';
 import { loggerMiddleware } from './common/middleware/logger.middleware';
-import { PackagesSeeds } from './seeders/package/package.seeds';
+/* import { PackagesSeeds } from './seeders/package/package.seeds'; */
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);

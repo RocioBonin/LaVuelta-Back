@@ -23,7 +23,17 @@ export class CreateUserDto {
   })
   @IsString()
   @Length(3, 80)
-  fullname: string;
+  fullName: string;
+
+  @ApiProperty({
+    type: String,
+    example: 'John Lenon',
+    description:
+      'Indica el nombre de el cliente ya sea una empresa o persona',
+  })
+  @IsString()
+  @Length(3, 80)
+  company: string;
 
   @ApiProperty({
     type: String,
@@ -41,15 +51,14 @@ export class CreateUserDto {
     example: '12345678',
   })
   @IsString()
-  idNumber: string;
+  dni: string;
 
   @ApiProperty({
     type: String,
-    required: true,
     description: 'Contraseña del usuario',
     example: 'Jhon1234@',
   })
-  @IsNotEmpty()
+  @IsOptional()
   @IsStrongPassword({
     minLowercase: 1,
     minUppercase: 1,
@@ -60,7 +69,7 @@ export class CreateUserDto {
     message:
       'La contraseña debe contener al menos un carácter especial: !@#$%^&*',
   })
-  password: string;
+  password?: string;
 
   @ApiProperty({
     type: String,
@@ -69,7 +78,7 @@ export class CreateUserDto {
   })
   @IsNotEmpty()
   @IsString()
-  location: string;
+  address: string;
 
   @ApiProperty({
     type: String,
@@ -92,7 +101,7 @@ export class CreateUserDto {
   @ApiProperty({
     enum: Role,
     description: 'Rol asignado al usuario',
-    default: Role.User,
+    default: Role.Client,
   })
   @IsEnum(Role)
   @IsOptional()
