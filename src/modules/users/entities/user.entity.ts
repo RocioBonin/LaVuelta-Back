@@ -1,6 +1,6 @@
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { Role } from "../enum/role.enum";
-import { Package } from "src/modules/package/entities/package.entity";
+import { Package } from "src/modules/deposit/entities/package.entity";
 import { Exclude } from "class-transformer";
 
 @Entity({name: 'users'})

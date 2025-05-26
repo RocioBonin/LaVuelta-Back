@@ -1,29 +1,19 @@
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
-import { State } from "../enum/state.enum";
 import { User } from "src/modules/users/entities/user.entity";
 
-@Entity('packages')
-export class Package {
+@Entity('')
+export class Deposit {
     @PrimaryGeneratedColumn('uuid')
     id: string;
 
     @Column({ unique: true })
-    packageNumber: string;
+    product: string; 
 
     @Column({ nullable: true })
-    clientName?: string;
+    quantity: string;
 
     @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP'})
-    receivedDate: Date;
-
-    @Column({ nullable: true })
-    emissionDate?: Date;
-
-    @Column({ nullable: true })
-    deliveryDate?: Date;
-
-    @Column({type: 'enum', enum: State, default: State.DEPOSIT})
-    status: State;
+    company: Date;
 
     @ManyToOne(() => User, (user) => user.packages)
     user: User;
