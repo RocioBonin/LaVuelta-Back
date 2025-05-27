@@ -9,13 +9,15 @@ import { Repository } from 'typeorm';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UserService } from '../users/user.service';
 import { Deposit } from './entities/deposit.entity';
+import { plainToInstance } from 'class-transformer';
+import { UserResponseDto } from '../users/dto/user-response.dto';
 
 @Injectable()
 export class DepositService {
   constructor(
     @InjectRepository(Deposit)
     private depositRepository: Repository<Deposit>,
-    private userService: UserService
+    private userService: UserService,
   ) {}
 
   async getProducts() {
@@ -30,16 +32,37 @@ export class DepositService {
 
     const user = await this.userService.getUserByCompanyName(company);
 
-    if(company !== user.company) {
+    if (company !== user.company) {
       throw new ConflictException('No coincide el nombre de la compañia');
+    }
+
+    const existing = await this.depositRepository.findOne({
+      where: {
+        product: createProductDto.product,
+        company: createProductDto.company,
+      },
+    });
+
+    if (existing) {
+      existing.quantity += createProductDto.quantity;
+
+      const saved = await this.depositRepository.save(existing);
+      const transformed = {
+        ...saved,
+        customers: plainToInstance(UserResponseDto, user, {
+          excludeExtraneousValues: true,
+        }),
+      };
+
+      return transformed;
     }
 
     const newProduct = this.depositRepository.create({
       ...createProductDto,
-      customers: user
+      customers: user,
     });
-    
-    return await this.depositRepository.save(newProduct);
+
+    return this.depositRepository.save(newProduct);
   }
 
   /* async removePackage(id: string) {
