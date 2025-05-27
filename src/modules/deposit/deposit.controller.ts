@@ -26,6 +26,20 @@ export class DepositController {
         return await this.depositService.createProduct(createProductDto);
     }
 
+    @ApiOperation({ summary: 'Sumar un nuevo producto' })
+    @ApiResponse({ status: 201, description: 'Producto sumado exitosamente' })
+    @Post('increment/:id')
+    async addProduct( @Param('id') productId: string ) {
+        return await this.depositService.addProduct(productId);
+    }
+
+    @ApiOperation({ summary: 'Resta un producto' })
+    @ApiResponse({ status: 201, description: 'Producto restado exitosamente' })
+    @Post('decrement/:id')
+    async decrementProduct( @Param('id') productId: string ) {
+        return await this.depositService.decrementProduct(productId);
+    }
+
    /*  @ApiOperation({ summary: 'Eliminar un paquete por ID' })
     @ApiResponse({ status: 200, description: 'Paquete eliminado exitosamente' })
     @ApiResponse({ status: 404, description: 'Paquete no encontrado' })
@@ -34,11 +48,11 @@ export class DepositController {
         return await this.packageService.removePackage(id);
     } */
 
-    /* @ApiOperation({ summary: 'Obtener un paquete por ID' })
-    @ApiResponse({ status: 200, description: 'Paquete obtenido exitosamente' })
-    @ApiResponse({ status: 404, description: 'Paquete no encontrado' })
+    @ApiOperation({ summary: 'Obtener un producto por ID' })
+    @ApiResponse({ status: 200, description: 'Producto obtenido exitosamente' })
+    @ApiResponse({ status: 404, description: 'Producto no encontrado' })
     @Get(':id')
-    async getPackageById(@Param('id') id: string) {
-        return await this.packageService.packageById(id);
-    } */
+    async getProductById(@Param('id') productId: string) {
+        return await this.depositService.productById(productId);
+    }
 }

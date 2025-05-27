@@ -62,7 +62,19 @@ export class DepositService {
       customers: user,
     });
 
-    return this.depositRepository.save(newProduct);
+    return await this.depositRepository.save(newProduct);
+  }
+
+  async addProduct(productId: string) {
+    const product = await this.productById(productId);
+    product.quantity += 1;
+    return await this.depositRepository.save(product);
+  }
+
+  async decrementProduct(productId: string) {
+    const product = await this.productById(productId);
+    product.quantity -= 1;
+    return await this.depositRepository.save(product);
   }
 
   /* async removePackage(id: string) {
@@ -72,16 +84,20 @@ export class DepositService {
     return { message: 'Paquete eliminado correctamente.' };
   } */
 
-  /* async packageById(id: string) {
-    const pkg = await this.packageRepository.findOne({
-      where: { id },
-      relations: ['user'],
-    });
-
-    if (!pkg) {
-      throw new NotFoundException('Paquete no encontrado');
+  async productById(productId: string) {
+    if (!productId || typeof productId !== 'string') {
+      throw new BadRequestException('ID de producto inválido');
     }
 
-    return pkg;
-  } */
+    const existing = await this.depositRepository.findOne({
+      where: { id: productId },
+      relations: ['customers'],
+    });
+
+    if (!existing) {
+      throw new NotFoundException('Producto no encontrado');
+    }
+
+    return existing;
+  }
 }
