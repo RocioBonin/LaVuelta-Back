@@ -67,9 +67,7 @@ export class UserService {
   }
 
   async getAllUsers(): Promise<UserResponseDto[]> {
-    const users = await this.userRepository.find({
-      relations: ['packages'],
-    });
+    const users = await this.userRepository.find();
   
     return plainToInstance(UserResponseDto, users, {
       excludeExtraneousValues: true,
@@ -147,8 +145,7 @@ export class UserService {
   async getUserById(userId: string) {
     const user = await this.userRepository.findOne(
       {
-        where: {id: userId},
-        relations: ['packages']
+        where: {id: userId}
       }
     );
     
