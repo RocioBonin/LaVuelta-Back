@@ -77,12 +77,12 @@ export class DepositService {
     return await this.depositRepository.save(product);
   }
 
-  /* async removePackage(id: string) {
-    const pkg = await this.packageById(id);
+  async removeProduct(productId: string) {
+    const product = await this.productById(productId);
 
-    await this.packageRepository.remove(pkg);
-    return { message: 'Paquete eliminado correctamente.' };
-  } */
+    await this.depositRepository.remove(product);
+    return { message: 'Producto eliminado correctamente.' };
+  }
 
   async productById(productId: string) {
     if (!productId || typeof productId !== 'string') {

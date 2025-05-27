@@ -40,13 +40,13 @@ export class DepositController {
         return await this.depositService.decrementProduct(productId);
     }
 
-   /*  @ApiOperation({ summary: 'Eliminar un paquete por ID' })
-    @ApiResponse({ status: 200, description: 'Paquete eliminado exitosamente' })
-    @ApiResponse({ status: 404, description: 'Paquete no encontrado' })
+    @ApiOperation({ summary: 'Eliminar un producto por ID' })
+    @ApiResponse({ status: 200, description: 'Producto eliminado exitosamente' })
+    @ApiResponse({ status: 404, description: 'Producto no encontrado' })
     @Delete(':id')
-    async removePackage(@Param('id') id: string) {
-        return await this.packageService.removePackage(id);
-    } */
+    async removeProduct(@Param('id') productId: string) {
+        return await this.depositService.removeProduct(productId);
+    }
 
     @ApiOperation({ summary: 'Obtener un producto por ID' })
     @ApiResponse({ status: 200, description: 'Producto obtenido exitosamente' })
