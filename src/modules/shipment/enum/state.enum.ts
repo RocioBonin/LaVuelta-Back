@@ -1,5 +1,6 @@
 export enum State {
-    DEPOSIT = 'DEPÓSITO',
+    TO_BE_PACKED = 'POR EMPAQUETAR',
+    PACKAGING = 'EMPAQUETADO',
     IN_TRANSIT = 'EN CAMINO',
     DELIVERED = 'ENTREGADO',
 }

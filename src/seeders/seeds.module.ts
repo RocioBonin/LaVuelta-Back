@@ -2,15 +2,15 @@ import { Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { User } from "src/modules/users/entities/user.entity";
 import { JwtModule } from "@nestjs/jwt";
-import { Package } from "src/modules/deposit/entities/package.entity";
 import { UsersSeeds } from "./user/user.seeds";
-/* import { PackagesSeeds } from "./package/package.seeds"; */
+import { Deposit } from "src/modules/deposit/entities/deposit.entity";
+import { DepositSeeds } from "./deposit/deposit.seeds";
 
 @Module({
-    imports:[TypeOrmModule.forFeature([User, Package]),
+    imports:[TypeOrmModule.forFeature([User, Deposit]),
     JwtModule,
 ],
-    providers: [UsersSeeds/* , PackagesSeeds */],
+    providers: [UsersSeeds, DepositSeeds],
     exports: [UsersSeeds],
 })
 

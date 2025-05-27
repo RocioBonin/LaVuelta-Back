@@ -33,7 +33,7 @@ export class UsersSeeds {
         address: 'Mendoza',
         phone: '3333333333',
         birthdate: new Date('1992-08-10'),
-        role: Role.Client,
+        role: Role.Customer,
         company: 'Lauri',
         newsletter: true,
       },
@@ -45,7 +45,7 @@ export class UsersSeeds {
         address: 'Salta',
         phone: '55555555654',
         birthdate: new Date('1988-12-05'),
-        role: Role.Client,
+        role: Role.Customer,
         company: 'Ana Ruiz',
         newsletter: true,
       },
@@ -58,7 +58,7 @@ export class UsersSeeds {
         phone: '1010101010',
         birthdate: new Date('1996-05-14'),
         company: 'Tomatito',
-        role: Role.Client
+        role: Role.Customer
       },
       {
         fullName: 'Lucia Mendez',
@@ -69,7 +69,7 @@ export class UsersSeeds {
         phone: '4444444444',
         birthdate: new Date('1990-02-20'),
         company: 'Lucia Mendez',
-        role: Role.Client,
+        role: Role.Customer,
         newsletter: true,
       },
       {
@@ -81,7 +81,7 @@ export class UsersSeeds {
         phone: '5555555555444',
         birthdate: new Date('1987-07-19'),
         company: 'Marianito',
-        role: Role.Client,
+        role: Role.Customer,
       },
       {
         fullName: 'Julieta Salas',
@@ -92,7 +92,7 @@ export class UsersSeeds {
         email: 'julieta@example.com',
         password: 'User222@',
         company: 'Julieta Salas',
-        role: Role.Client,
+        role: Role.Customer,
         newsletter: true,
       },
       {
@@ -104,7 +104,7 @@ export class UsersSeeds {
         email: 'ricardo@example.com',
         password: 'User333@',
         company: 'Ricardito',
-        role: Role.Client,
+        role: Role.Customer,
         newsletter: true,
       },
       {
@@ -116,7 +116,7 @@ export class UsersSeeds {
         email: 'valeria@example.com',
         password: 'User444@',
         company: 'Valeria',
-        role: Role.Client,
+        role: Role.Customer,
         newsletter: true,
       },
       {
@@ -125,10 +125,21 @@ export class UsersSeeds {
         address: 'Misiones',
         phone: '9999999999',
         birthdate: new Date('1989-05-05'),
+        email: 'ezequielMartinez@example.com',
+        password: 'User5556@',
+        company: 'Ezequiel Martinez',
+        role: Role.Customer,
+      },
+      {
+        fullName: 'Eze Marquez',
+        dni: '444543643',
+        address: 'Misiones',
+        phone: '99996543654',
+        birthdate: new Date('1988-05-05'),
         email: 'ezequiel@example.com',
         password: 'User555@',
-        company: 'Ezequiel Martinez',
-        role: Role.Client
+        company: 'Eze Marquez',
+        role: Role.Customer,
       }
     ];
 

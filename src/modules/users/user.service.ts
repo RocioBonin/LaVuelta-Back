@@ -105,6 +105,18 @@ export class UserService {
       excludeExtraneousValues: true,
     }); 
   }
+
+  async getUserByCompanyName(company: string) {
+    const user = await this.userRepository.findOne({where: { company: company }});
+  
+    if (!user) {
+      throw new NotFoundException("No se encontro un usuario con el nombre indicado.");
+    }
+  
+    return plainToInstance(UserResponseDto, user, {
+      excludeExtraneousValues: true,
+    }); 
+  }
   
   async findEmail(email: string) {
     const user = await this.userRepository.findOne({ where: { email } });
@@ -169,7 +181,7 @@ export class UserService {
       throw new ConflictException('El usuario no es administrador');
     }
   
-    user.role = Role.Client;
+    user.role = Role.Customer;
     await this.userRepository.save(user);
   
     return { message: 'Rol de administrador removido correctamente' };

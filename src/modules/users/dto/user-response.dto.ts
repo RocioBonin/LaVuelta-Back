@@ -17,11 +17,11 @@ export class UserResponseDto {
   address: string;
 
   @Expose()
-  company: string;
-
-  @Expose()
   phone: string;
 
   @Expose()
   birthdate: Date;
+
+  @Expose()
+  company: string;
 }

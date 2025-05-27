@@ -101,7 +101,7 @@ export class CreateUserDto {
   @ApiProperty({
     enum: Role,
     description: 'Rol asignado al usuario',
-    default: Role.Client,
+    default: Role.Customer,
   })
   @IsEnum(Role)
   @IsOptional()

@@ -5,7 +5,7 @@ import { HttpExceptionFilter } from './common/middleware/errors.middleware';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { UsersSeeds } from './seeders/user/user.seeds';
 import { loggerMiddleware } from './common/middleware/logger.middleware';
-/* import { PackagesSeeds } from './seeders/package/package.seeds'; */
+import { DepositSeeds } from './seeders/deposit/deposit.seeds';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -23,8 +23,8 @@ async function bootstrap() {
   const usersSeed = app.get(UsersSeeds);
   await usersSeed.run();
   
-  /* const packagesSeed = app.get(PackagesSeeds);
-  await packagesSeed.run(); */
+  const depositSeed = app.get(DepositSeeds);
+  await depositSeed.run();
 
   app.useGlobalFilters(new HttpExceptionFilter());
 
