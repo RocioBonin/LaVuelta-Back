@@ -2,6 +2,7 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { ShipmentService } from './shipment.service';
 import { CreateShipmentDto } from './dto/shipment.dto';
 import { ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { StatusShipmentDto } from './dto/status-update-shipment.dto';
 
 @Controller('shipment')
 export class ShipmentController {
@@ -26,5 +27,18 @@ export class ShipmentController {
   @Delete(':id')
   async remove(@Param('id') id: string) {
     return await this.shipmentService.remove(id);
+  }
+
+  @ApiOperation({ summary: 'Cambiar el estado del envío' })
+  @ApiResponse({
+    status: 200,
+    description: 'El estado del envío ha sido actualizado correctamente',
+  })
+  @Patch(':id/status')
+  async updateStatus(
+    @Body() dto: StatusShipmentDto,
+    @Param('id') shipmentId: string, 
+  ) {
+    return await this.shipmentService.updateStatus(shipmentId, dto.status);
   }
 }

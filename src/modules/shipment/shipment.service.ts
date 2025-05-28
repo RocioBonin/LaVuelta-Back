@@ -14,6 +14,8 @@ import { Deposit } from '../deposit/entities/deposit.entity';
 import { ShipmentProduct } from './entities/shipment-product.entity';
 import { plainToInstance } from 'class-transformer';
 import { ShipmentResponseDto } from './dto/shipment-response.dto';
+import { StatusShipmentDto } from './dto/status-update-shipment.dto';
+import { State } from './enum/state.enum';
 
 @Injectable()
 export class ShipmentService {
@@ -141,5 +143,19 @@ export class ShipmentService {
     await this.shipmentRepository.remove(shipment);
 
     return {message: 'Envío elimiando exítosamente'}
+  }
+
+  async updateStatus(shipmentId: string, status: State) {
+    const shipment = await this.shipmentRepository.findOne({
+      where: {id: shipmentId}
+    });
+
+    if (!shipment) {
+        throw new NotFoundException('Envío no encontrado');
+    }
+
+    shipment.status = status;
+    await this.shipmentRepository.save(shipment);
+    return {message: 'Estado actualizado correctamente'}
   }
 }
