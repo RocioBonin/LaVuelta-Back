@@ -17,8 +17,9 @@ export class ShipmentController {
   }
 
   @Get()
-  findAll() {
-    return this.shipmentService.findAll();
+  @ApiOperation({ summary: 'Trae todos los envíos' })
+  async findAll() {
+    return await this.shipmentService.findAll();
   }
 
   @Get(':id')

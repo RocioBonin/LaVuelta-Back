@@ -4,6 +4,7 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
+import { DataSource } from 'typeorm'; 
 import { CreateShipmentDto } from './dto/shipment.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../users/entities/user.entity';
@@ -25,15 +26,23 @@ export class ShipmentService {
     private readonly shipmentProductRepository: Repository<ShipmentProduct>,
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
+    private readonly dataSource: DataSource,
   ) {}
 
   async createShipment(createShipmentDto: CreateShipmentDto) {
-    const customer = await this.userRepository.findOne({
+  const queryRunner = this.dataSource.createQueryRunner();
+  await queryRunner.connect();
+  await queryRunner.startTransaction();
+
+  try {
+    const customer = await queryRunner.manager.findOne(User, {
       where: { id: createShipmentDto.customerId },
     });
-    if (!customer) throw new NotFoundException('Cliente no encontrado');
+    if (!customer) {
+      throw new NotFoundException('Cliente no encontrado');
+    }
 
-    const shipment = this.shipmentRepository.create({
+    const shipment = queryRunner.manager.create(Shipment, {
       orderId: createShipmentDto.orderId,
       company: createShipmentDto.company,
       customerId: customer.id,
@@ -45,48 +54,48 @@ export class ShipmentService {
       customer,
     });
 
-    const savedShipment = await this.shipmentRepository.save(shipment);
+    const savedShipment = await queryRunner.manager.save(shipment);
+    const shipmentProducts: ShipmentProduct[] = [];
 
-    const shipmentProducts = [];
+    for (const { depositId, quantity } of createShipmentDto.products) {
+      if (quantity <= 0) {
+        throw new BadRequestException(
+          `Cantidad inválida para el producto con ID ${depositId}`,
+        );
+      }
 
-    for (const p of createShipmentDto.products) {
-      const depositProduct = await this.depositRepository.findOne({
-        where: { id: p.depositId },
+      const depositProduct = await queryRunner.manager.findOne(Deposit, {
+        where: { id: depositId },
       });
 
       if (!depositProduct) {
-        throw new NotFoundException(
-          `Producto con ID ${p.depositId} no encontrado`,
-        );
+        throw new NotFoundException(`Producto con ID ${depositId} no encontrado`);
       }
 
-      if (p.quantity <= 0) {
-        throw new BadRequestException(
-          `Cantidad inválida para el producto con ID ${p.depositId}`,
-        );
-      }
-
-      if (depositProduct.quantity < p.quantity) {
+      if (depositProduct.quantity < quantity) {
         throw new ConflictException(
           `Stock insuficiente para ${depositProduct.product}`,
         );
       }
 
-      depositProduct.quantity -= p.quantity;
-      await this.depositRepository.save(depositProduct);
+      depositProduct.quantity -= quantity;
+      await queryRunner.manager.save(depositProduct);
 
-      const shipmentProduct = this.shipmentProductRepository.create({
+      const shipmentProduct = queryRunner.manager.create(ShipmentProduct, {
         shipment: savedShipment,
         product: depositProduct,
-        quantity: p.quantity,
+        quantity,
       });
 
-      const savedShipmentProduct =
-        await this.shipmentProductRepository.save(shipmentProduct);
-      shipmentProducts.push(savedShipmentProduct);
+      const savedSP = await queryRunner.manager.save(shipmentProduct);
+      shipmentProducts.push(savedSP);
     }
 
-    savedShipment.shipmentProducts = shipmentProducts;
+    if (shipmentProducts.length === 0) {
+      throw new BadRequestException('El envío no contiene productos válidos');
+    }
+
+    await queryRunner.commitTransaction();
 
     const result = await this.shipmentRepository.findOne({
       where: { id: savedShipment.id },
@@ -96,11 +105,24 @@ export class ShipmentService {
     return plainToInstance(ShipmentResponseDto, result, {
       excludeExtraneousValues: true,
     });
+  } catch (err) {
+    await queryRunner.rollbackTransaction();
+    throw err;
+  } finally {
+    await queryRunner.release();
   }
+}
 
-  findAll() {
-    return `This action returns all shipment`;
-  }
+  async findAll(): Promise<ShipmentResponseDto[]> {
+  const shipments = await this.shipmentRepository.find({
+    relations: ['customer', 'shipmentProducts', 'shipmentProducts.product'],
+  });
+
+  return plainToInstance(ShipmentResponseDto, shipments, {
+    excludeExtraneousValues: true,
+  });
+}
+
 
   findOne(id: number) {
     return `This action returns a #${id} shipment`;

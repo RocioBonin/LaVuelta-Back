@@ -15,6 +15,9 @@ export class Deposit {
     @Column({ length: 20 })
     company: string;
 
+    @Column() 
+    customerId: string;
+
     @ManyToOne(() => User, user => user.deposit, { onDelete: 'CASCADE' })
     @JoinColumn({ name: 'customerId' })
     customers: User;
