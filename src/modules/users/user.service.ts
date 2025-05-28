@@ -138,6 +138,9 @@ export class UserService {
   
   async deletedUser(id: string) {
     const user = await this.userRepository.findOne({ where: { id } });
+    if (!user) {
+        throw new NotFoundException('Usuario no encontrado');
+    }
     await this.userRepository.remove(user);
     return { message: 'Usuario eliminado correctamente.' };
   }

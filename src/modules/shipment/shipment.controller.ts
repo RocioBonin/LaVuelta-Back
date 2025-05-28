@@ -22,13 +22,9 @@ export class ShipmentController {
     return await this.shipmentService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.shipmentService.findOne(+id);
-  }
-
+  @ApiOperation({ summary: 'Elimina un envío por id' })
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.shipmentService.remove(+id);
+  async remove(@Param('id') id: string) {
+    return await this.shipmentService.remove(id);
   }
 }
