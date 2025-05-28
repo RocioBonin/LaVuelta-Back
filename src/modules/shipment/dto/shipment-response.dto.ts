@@ -10,6 +10,10 @@ export class ShipmentResponseDto {
   orderId: string;
 
   @Expose()
+  @Type(() => ShipmentProductResponseDto)
+  shipmentProducts: ShipmentProductResponseDto[];
+
+  @Expose()
   address: string;
 
   @Expose()
@@ -30,8 +34,4 @@ export class ShipmentResponseDto {
   @Expose()
   @Type(() => UserResponseDto)
   customer: UserResponseDto;
-
-  @Expose()
-  @Type(() => ShipmentProductResponseDto)
-  shipmentProducts: ShipmentProductResponseDto[];
 }
