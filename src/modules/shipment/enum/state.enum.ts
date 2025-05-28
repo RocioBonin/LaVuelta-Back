@@ -3,4 +3,5 @@ export enum State {
     PACKAGING = 'EMPAQUETADO',
     IN_TRANSIT = 'EN CAMINO',
     DELIVERED = 'ENTREGADO',
+    DISPATCHED = 'DESPACHADO',
 }

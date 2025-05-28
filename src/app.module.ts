@@ -12,6 +12,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { MercadopagoModule } from './modules/mercadopago/mercadopago.module';
 import { DepositModule } from './modules/deposit/deposit.module';
+import { ShipmentModule } from './modules/shipment/shipment.module';
 
 @Module({
   imports: [
@@ -36,7 +37,8 @@ import { DepositModule } from './modules/deposit/deposit.module';
       secret: process.env.JWT_SECRET,
     }),
     MercadopagoModule,
-    DepositModule, 
+    DepositModule,
+    ShipmentModule, 
   ],
   controllers: [AppController],
   providers: [AppService],

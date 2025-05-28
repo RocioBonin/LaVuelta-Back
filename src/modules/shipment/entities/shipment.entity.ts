@@ -1,6 +1,7 @@
-import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { State } from '../enum/state.enum';
 import { User } from 'src/modules/users/entities/user.entity';
+import { ShipmentProduct } from './shipment-product.entity';
 
 @Entity()
 export class Shipment {
@@ -9,9 +10,6 @@ export class Shipment {
 
   @Column()
   orderId: string;
-
-  @Column()
-  products: string;
 
   @Column()
   address: string;
@@ -38,4 +36,10 @@ export class Shipment {
   @ManyToOne(() => User, user => user.shipments, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'customerId' })
   customer: User;
+
+  @Column()
+  customerId: string;
+
+  @OneToMany(() => ShipmentProduct, sp => sp.shipment, { cascade: true, eager: true })
+  shipmentProducts: ShipmentProduct[];
 }			
