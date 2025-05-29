@@ -30,17 +30,10 @@ export class AuthServices {
       throw new HttpException('Usuario no encontrado', 404);
     }
 
-    console.log('Password ingresada:', passwordSignIn);
-    console.log('Password en DB:', user.password);
-
-
     const isPasswordMatching = await compare(
         passwordSignIn,
         user.password,
       );
-
-      console.log('Resultado del compare():', isPasswordMatching);
-
 
     if (!isPasswordMatching) {
       throw new HttpException(

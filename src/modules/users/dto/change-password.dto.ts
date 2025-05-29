@@ -1,5 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsNotEmpty, IsStrongPassword, Matches } from "class-validator";
+import { IsNotEmpty, IsString, IsStrongPassword, Matches } from "class-validator";
 
 export class ChangePasswordDto {
     @ApiProperty({
@@ -8,16 +8,7 @@ export class ChangePasswordDto {
         example: 'Jhon1234@',
       })
       @IsNotEmpty()
-      @IsStrongPassword({
-        minLowercase: 1,
-        minUppercase: 1,
-        minNumbers: 1,
-        minSymbols: 1,
-      })
-      @Matches(/[!@#$%^&*]/, {
-        message:
-          'La contraseña debe contener al menos un carácter especial: !@#$%^&*',
-      })
+      @IsString()
       password: string;
 
       @ApiProperty({

@@ -117,8 +117,8 @@ export class UserController {
   @Patch(':id/changePass')
   @HttpCode(HttpStatus.OK)
   async changePassword(
-    @Body() changePasswordDto: ChangePasswordDto,
-    @Param('id') userId: string
+    @Param('id') userId: string,
+    @Body() changePasswordDto: ChangePasswordDto
   ) {
     return await this.userService.changePassword(userId, changePasswordDto);
   }
