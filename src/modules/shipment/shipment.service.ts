@@ -16,6 +16,8 @@ import { plainToInstance } from 'class-transformer';
 import { ShipmentResponseDto } from './dto/shipment-response.dto';
 import { StatusShipmentDto } from './dto/status-update-shipment.dto';
 import { State } from './enum/state.enum';
+import { PaginationDto } from 'src/common/dto/pagination.dto';
+import { paginateData } from 'src/common/utils/paginate-data';
 
 @Injectable()
 export class ShipmentService {
@@ -111,19 +113,22 @@ export class ShipmentService {
     }
   }
 
-  async findAll(): Promise<ShipmentResponseDto[]> {
-    const shipments = await this.shipmentRepository.find({
-      relations: ['customer', 'shipmentProducts', 'shipmentProducts.product'],
-    });
+  async findAll(paginationDto: PaginationDto) {
+  const { page = 1, limit = 10 } = paginationDto;
 
-    if (!shipments) {
-      throw new NotFoundException('Envíos no encontrados');
-    }
+  const [shipments, total] = await this.shipmentRepository.findAndCount({
+    skip: (page - 1) * limit,
+    take: limit,
+    relations: ['customer', 'shipmentProducts', 'shipmentProducts.product']
+  });
 
-    return plainToInstance(ShipmentResponseDto, shipments, {
-      excludeExtraneousValues: true,
-    });
-  }
+  const data = plainToInstance(ShipmentResponseDto, shipments, {
+    excludeExtraneousValues: true,
+  });
+
+  return paginateData(data, total, page, limit);
+}
+
 
   async remove(id: string) {
     const shipment = await this.shipmentRepository.findOne({

@@ -11,6 +11,8 @@ import { UserService } from '../users/user.service';
 import { Deposit } from './entities/deposit.entity';
 import { plainToInstance } from 'class-transformer';
 import { UserResponseDto } from '../users/dto/user-response.dto';
+import { paginateData } from 'src/common/utils/paginate-data';
+import { PaginationDto } from 'src/common/dto/pagination.dto';
 
 @Injectable()
 export class DepositService {
@@ -20,12 +22,16 @@ export class DepositService {
     private userService: UserService,
   ) {}
 
-  async getProducts() {
-    const products = await this.depositRepository.find();
+  async getProducts(paginationDto: PaginationDto) {
+  const { page = 1, limit = 10 } = paginationDto;
 
-    if (!products) throw new NotFoundException('Productos no encontrados');
-    return products;
-  }
+  const [products, total] = await this.depositRepository.findAndCount({
+    skip: (page - 1) * limit,
+    take: limit,
+  });
+
+  return paginateData(products, total, page, limit);
+}
 
   async createProduct(createProductDto: CreateProductDto) {
     const { company } = createProductDto;
