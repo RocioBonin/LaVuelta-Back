@@ -7,7 +7,7 @@ export class ShipmentProduct {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ type: 'int', unsigned: true })
+  @Column({ type: 'int'})
   quantity: number;
 
   @Column()

@@ -9,7 +9,7 @@ export class Deposit {
     @Column({ length: 20 })
     product: string; 
 
-    @Column({ type: 'int', unsigned: true })
+    @Column({ type: 'int' })
     quantity: number;
 
     @Column({ length: 20 })
