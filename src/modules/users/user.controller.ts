@@ -23,6 +23,7 @@ import { Role } from './enum/role.enum';
 import { RoleGuards } from 'src/common/guards/role.guard';
 import { User } from './entities/user.entity';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { ChangePasswordDto } from './dto/change-password.dto';
 
 @ApiTags('Usuarios')
 @Controller('users')
@@ -110,5 +111,15 @@ export class UserController {
   @HttpCode(HttpStatus.OK)
   async removeAdmin(@Param('id') userId: string) {
     return await this.userService.removeAdmin(userId);
+  }
+
+  @ApiOperation({ summary: 'Cambia la contraseña del usuario' })
+  @Patch(':id/changePass')
+  @HttpCode(HttpStatus.OK)
+  async changePassword(
+    @Body() changePasswordDto: ChangePasswordDto,
+    @Param('id') userId: string
+  ) {
+    return await this.userService.changePassword(userId, changePasswordDto);
   }
 }

@@ -26,6 +26,17 @@ export class UsersSeeds {
         role: Role.Admin
       },
       {
+        fullName: 'Lautaro Gando',
+        email: 'lautarogandodev@gmail.com',
+        dni: '2365346534',
+        password: 'Ganditocapo@',
+        address: 'Córdoba',
+        phone: '265373',
+        birthdate: new Date('1985-06-15'),
+        company: '',
+        role: Role.Admin
+      },
+      {
         fullName: 'Laura Perez',
         email: 'laura@example.com',
         dni: '34567890',

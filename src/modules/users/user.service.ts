@@ -1,7 +1,8 @@
-import { BadRequestException, ConflictException, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, ConflictException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
 import { Repository } from 'typeorm';
+import * as bcrypt from 'bcrypt';
 import { EmailService } from 'src/modules/email/email.service';
 import { Role } from './enum/role.enum';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -10,6 +11,7 @@ import { plainToInstance } from 'class-transformer';
 import { UserResponseDto } from './dto/user-response.dto';
 import { randomBytes } from 'crypto';
 import { emailHtmlWithPassword } from '../email/templates/email.welcome';
+import { ChangePasswordDto } from './dto/change-password.dto';
 
 @Injectable()
 export class UserService {
@@ -44,10 +46,13 @@ export class UserService {
     };
 
     plainPassword = randomBytes(8).toString('hex');
+    const hashedPassword = await bcrypt.hash(plainPassword, 10);
+
+    const { password: _, ...rest } = createUserDto;
 
     const newUser = this.userRepository.create({
-      ...createUserDto,
-      password: plainPassword,
+      ...rest,
+      password: hashedPassword,
     });
 
     await this.userRepository.save(newUser);
@@ -134,6 +139,24 @@ export class UserService {
     return plainToInstance(UserResponseDto, updateUser, {
       excludeExtraneousValues: true,
     });
+  }
+
+  async changePassword( userId: string, changePassDto: ChangePasswordDto ) {
+    const user = await this.userRepository.findOne({where: {id: userId}});
+
+    if(changePassDto.password === user.password){
+      if(changePassDto.newPassword !== changePassDto.repeatNewPassword){
+        throw new UnauthorizedException('Las contraseñas no coinciden.');
+      }
+      const hashedPassword = await bcrypt.hash(changePassDto.newPassword, 10);
+
+      user.password = hashedPassword;
+      await this.userRepository.save(user);
+
+      return {message: "Contraseña actualizada correctamente"}
+    }
+
+    throw new UnauthorizedException('Contraseña incorrecta.');
   }
   
   async deletedUser(id: string) {

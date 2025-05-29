@@ -32,85 +32,84 @@ export class ShipmentService {
   ) {}
 
   async createShipment(createShipmentDto: CreateShipmentDto) {
-  const queryRunner = this.dataSource.createQueryRunner();
-  await queryRunner.connect();
-  await queryRunner.startTransaction();
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
 
-  try {
-    const customer = await queryRunner.manager.findOne(User, {
-      where: { id: createShipmentDto.customerId },
-    });
-    if (!customer) {
-      throw new NotFoundException('Cliente no encontrado');
-    }
-
-    const shipment = queryRunner.manager.create(Shipment, {
-      orderId: createShipmentDto.orderId,
-      company: createShipmentDto.company,
-      customerId: customer.id,
-      status: createShipmentDto.status,
-      address: createShipmentDto.address,
-      locality: createShipmentDto.locality,
-      postalCode: createShipmentDto.postalCode,
-      province: createShipmentDto.province,
-      customer,
-    });
-
-    const savedShipment = await queryRunner.manager.save(shipment);
-    const shipmentProducts: ShipmentProduct[] = [];
-
-    for (const { depositId, quantity } of createShipmentDto.products) {
-      if (quantity <= 0) continue;
-
-      const depositProduct = await queryRunner.manager.findOne(Deposit, {
-        where: { id: depositId },
+    try {
+      const customer = await queryRunner.manager.findOne(User, {
+        where: { id: createShipmentDto.customerId },
       });
-
-      if (!depositProduct) {
-        throw new NotFoundException(
-          `Producto con ID ${depositId} no encontrado`,
-        );
+      if (!customer) {
+        throw new NotFoundException('Cliente no encontrado');
       }
 
-      const quantityToSend = Math.min(depositProduct.quantity, quantity);
-      const quantityResult = quantityToSend === quantity
-        ? quantity
-        : quantityToSend - quantity; // negativo si faltó
-
-      depositProduct.quantity -= quantityToSend;
-      await queryRunner.manager.save(depositProduct);
-
-      const shipmentProduct = queryRunner.manager.create(ShipmentProduct, {
-        shipment: savedShipment,
-        product: depositProduct,
-        quantity: quantityResult,
+      const shipment = queryRunner.manager.create(Shipment, {
+        orderId: createShipmentDto.orderId,
+        company: createShipmentDto.company,
+        customerId: customer.id,
+        status: createShipmentDto.status,
+        address: createShipmentDto.address,
+        locality: createShipmentDto.locality,
+        postalCode: createShipmentDto.postalCode,
+        province: createShipmentDto.province,
+        customer,
       });
 
-      const savedSP = await queryRunner.manager.save(shipmentProduct);
-      shipmentProducts.push(savedSP);
+      const savedShipment = await queryRunner.manager.save(shipment);
+      const shipmentProducts: ShipmentProduct[] = [];
+
+      for (const { depositId, quantity } of createShipmentDto.products) {
+        if (quantity <= 0) continue;
+
+        const depositProduct = await queryRunner.manager.findOne(Deposit, {
+          where: { id: depositId },
+        });
+
+        if (!depositProduct) {
+          throw new NotFoundException(
+            `Producto con ID ${depositId} no encontrado`,
+          );
+        }
+
+        const quantityToSend = Math.min(depositProduct.quantity, quantity);
+        const quantityResult =
+          quantityToSend === quantity ? quantity : quantityToSend - quantity; // negativo si faltó
+
+        depositProduct.quantity -= quantityToSend;
+        await queryRunner.manager.save(depositProduct);
+
+        const shipmentProduct = queryRunner.manager.create(ShipmentProduct, {
+          shipment: savedShipment,
+          product: depositProduct,
+          quantity: quantityResult,
+        });
+
+        const savedSP = await queryRunner.manager.save(shipmentProduct);
+        shipmentProducts.push(savedSP);
+      }
+
+      if (shipmentProducts.length === 0) {
+        throw new BadRequestException('El envío no contiene productos válidos');
+      }
+
+      await queryRunner.commitTransaction();
+
+      const result = await this.shipmentRepository.findOne({
+        where: { id: savedShipment.id },
+        relations: ['customer', 'shipmentProducts', 'shipmentProducts.product'],
+      });
+
+      return plainToInstance(ShipmentResponseDto, result, {
+        excludeExtraneousValues: true,
+      });
+    } catch (err) {
+      await queryRunner.rollbackTransaction();
+      throw err;
+    } finally {
+      await queryRunner.release();
     }
-
-    if (shipmentProducts.length === 0) {
-      throw new BadRequestException('El envío no contiene productos válidos');
-    }
-
-    await queryRunner.commitTransaction();
-
-    const result = await this.shipmentRepository.findOne({
-      where: { id: savedShipment.id },
-      relations: ['customer', 'shipmentProducts', 'shipmentProducts.product'],
-    });
-
-    return plainToInstance(ShipmentResponseDto, result, {
-      excludeExtraneousValues: true,
-    });
-  } catch (err) {
-    await queryRunner.rollbackTransaction();
-    throw err;
-  } finally {
-    await queryRunner.release();
   }
-}
 
   async findAll(): Promise<ShipmentResponseDto[]> {
     const shipments = await this.shipmentRepository.find({

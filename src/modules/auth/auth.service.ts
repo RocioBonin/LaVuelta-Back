@@ -1,6 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { UserService } from 'src/modules/users/user.service';
-import * as bcrypt from 'bcryptjs';
+import { compare } from 'bcrypt';
 import { SignInAuthDto } from './dto/signin-auth.dto';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -30,10 +30,17 @@ export class AuthServices {
       throw new HttpException('Usuario no encontrado', 404);
     }
 
-    const isPasswordMatching = await bcrypt.compare(
+    console.log('Password ingresada:', passwordSignIn);
+    console.log('Password en DB:', user.password);
+
+
+    const isPasswordMatching = await compare(
         passwordSignIn,
         user.password,
       );
+
+      console.log('Resultado del compare():', isPasswordMatching);
+
 
     if (!isPasswordMatching) {
       throw new HttpException(
