@@ -106,21 +106,20 @@ export class ShipmentService {
   }
 
   async findAll(paginationDto: PaginationDto) {
-  const { page = 1, limit = 10 } = paginationDto;
+    const { page = 1, limit = 10 } = paginationDto;
 
-  const [shipments, total] = await this.shipmentRepository.findAndCount({
-    skip: (page - 1) * limit,
-    take: limit,
-    relations: ['customer', 'shipmentProducts', 'shipmentProducts.product']
-  });
+    const [shipments, total] = await this.shipmentRepository.findAndCount({
+      skip: (page - 1) * limit,
+      take: limit,
+      relations: ['customer', 'shipmentProducts', 'shipmentProducts.product'],
+    });
 
-  const data = plainToInstance(ShipmentResponseDto, shipments, {
-    excludeExtraneousValues: true,
-  });
+    const data = plainToInstance(ShipmentResponseDto, shipments, {
+      excludeExtraneousValues: true,
+    });
 
-  return paginateData(data, total, page, limit);
-}
-
+    return paginateData(data, total, page, limit);
+  }
 
   async remove(id: string) {
     const shipment = await this.shipmentRepository.findOne({
