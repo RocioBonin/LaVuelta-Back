@@ -24,12 +24,6 @@ export class ShipmentService {
   constructor(
     @InjectRepository(Shipment)
     private readonly shipmentRepository: Repository<Shipment>,
-    @InjectRepository(Deposit)
-    private readonly depositRepository: Repository<Deposit>,
-    @InjectRepository(ShipmentProduct)
-    private readonly shipmentProductRepository: Repository<ShipmentProduct>,
-    @InjectRepository(User)
-    private readonly userRepository: Repository<User>,
     private readonly dataSource: DataSource,
   ) {}
 
@@ -50,6 +44,7 @@ export class ShipmentService {
         orderId: createShipmentDto.orderId,
         company: createShipmentDto.company,
         customerId: customer.id,
+        shipmentType: createShipmentDto.shipmentType,
         status: createShipmentDto.status,
         address: createShipmentDto.address,
         locality: createShipmentDto.locality,
@@ -74,17 +69,14 @@ export class ShipmentService {
           );
         }
 
-        const quantityToSend = Math.min(depositProduct.quantity, quantity);
-        const quantityResult =
-          quantityToSend === quantity ? quantity : quantityToSend - quantity; // negativo si faltó
-
-        depositProduct.quantity -= quantityToSend;
+        const availableToSend = Math.min(depositProduct.quantity, quantity);
+        depositProduct.quantity -= availableToSend;
         await queryRunner.manager.save(depositProduct);
 
         const shipmentProduct = queryRunner.manager.create(ShipmentProduct, {
           shipment: savedShipment,
           product: depositProduct,
-          quantity: quantityResult,
+          quantity: quantity,
         });
 
         const savedSP = await queryRunner.manager.save(shipmentProduct);
