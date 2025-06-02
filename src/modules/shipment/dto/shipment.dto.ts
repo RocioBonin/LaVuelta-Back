@@ -1,7 +1,8 @@
 import { IsUUID, IsString, IsArray, ValidateNested, IsOptional, IsEnum } from 'class-validator';
 import { Type } from 'class-transformer';
 import { CreateShipmentProductDto } from './create-shipment-product.dto';
-import { State } from '../enum/state.enum';
+import { State } from '../enums/state.enum';
+import { ShipmentType } from '../enums/shipment-type';
 
 export class CreateShipmentDto {
   @IsUUID()
@@ -24,6 +25,9 @@ export class CreateShipmentDto {
 
   @IsString()
   province: string;
+
+  @IsEnum(ShipmentType)
+  shipmentType: ShipmentType;
 
   @IsOptional()
   @IsEnum(State)

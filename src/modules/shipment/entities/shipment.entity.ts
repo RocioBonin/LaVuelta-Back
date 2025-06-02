@@ -1,7 +1,8 @@
 import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
-import { State } from '../enum/state.enum';
+import { State } from '../enums/state.enum';
 import { User } from 'src/modules/users/entities/user.entity';
 import { ShipmentProduct } from './shipment-product.entity';
+import { ShipmentType } from '../enums/shipment-type';
 
 @Entity()
 export class Shipment {
@@ -31,7 +32,13 @@ export class Shipment {
     enum: State,
     default: State.TO_BE_PACKED,
   })
-  status: State; 
+  status: State;
+  
+  @Column({
+    type: 'enum',
+    enum: ShipmentType
+  })
+  shipmentType: ShipmentType; 
 
   @ManyToOne(() => User, user => user.shipments, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'customerId' })

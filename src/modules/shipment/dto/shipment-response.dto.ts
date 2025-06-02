@@ -32,6 +32,9 @@ export class ShipmentResponseDto {
   status: string;
 
   @Expose()
+  shipmentType: string;
+
+  @Expose()
   @Type(() => UserResponseDto)
   customer: UserResponseDto;
 }

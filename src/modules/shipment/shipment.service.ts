@@ -15,7 +15,7 @@ import { ShipmentProduct } from './entities/shipment-product.entity';
 import { plainToInstance } from 'class-transformer';
 import { ShipmentResponseDto } from './dto/shipment-response.dto';
 import { StatusShipmentDto } from './dto/status-update-shipment.dto';
-import { State } from './enum/state.enum';
+import { State } from './enums/state.enum';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
 import { paginateData } from 'src/common/utils/paginate-data';
 
