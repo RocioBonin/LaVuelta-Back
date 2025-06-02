@@ -29,10 +29,10 @@ export class ShipmentResponseDto {
   company: string;
 
   @Expose()
-  status: string;
+  shipmentType: string;
 
   @Expose()
-  shipmentType: string;
+  status: string;
 
   @Expose()
   @Type(() => UserResponseDto)
