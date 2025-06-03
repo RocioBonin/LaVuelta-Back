@@ -2,7 +2,6 @@ import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Patch, Post
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { DepositService } from './deposit.service';
 import { CreateProductDto } from './dto/create-product.dto';
-import { PaginationDto } from 'src/common/dto/pagination.dto';
 
 @ApiTags('Deposito') 
 @Controller('deposit')
@@ -14,8 +13,8 @@ export class DepositController {
     @ApiOperation({ summary: 'Obtener todos los productos en deposito' })
     @ApiResponse({ status: 200, description: 'Lista de productos obtenida exitosamente' })
     @Get()
-    async getProducts(@Query() paginationDto: PaginationDto) {
-        return await this.depositService.getProducts(paginationDto);
+    async getProducts() {
+        return await this.depositService.getProducts();
     }
 
     @ApiOperation({ summary: 'Crear un nuevo producto' })

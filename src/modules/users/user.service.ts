@@ -18,8 +18,6 @@ import { UserResponseDto } from './dto/user-response.dto';
 import { randomBytes } from 'crypto';
 import { emailHtmlWithPassword } from '../email/templates/email.welcome';
 import { ChangePasswordDto } from './dto/change-password.dto';
-import { PaginationDto } from 'src/common/dto/pagination.dto';
-import { paginateData } from 'src/common/utils/paginate-data';
 
 @Injectable()
 export class UserService {
@@ -74,20 +72,8 @@ export class UserService {
     });
   }
 
-  async getAllUsers(paginationDto: PaginationDto) {
-    const { page = 1, limit = 10 } = paginationDto;
-
-    const [users, total] = await this.userRepository.findAndCount({
-      skip: (page - 1) * limit,
-      take: limit,
-      order: { createdAt: 'DESC' },
-    });
-
-    const data = plainToInstance(UserResponseDto, users, {
-      excludeExtraneousValues: true,
-    });
-
-    return paginateData(data, total, page, limit);
+  async getAllUsers() {
+    return await this.userRepository.find();
   }
 
   async getUserByRole(userRole: Role) {

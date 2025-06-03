@@ -24,7 +24,6 @@ import { RoleGuards } from 'src/common/guards/role.guard';
 import { User } from './entities/user.entity';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { ChangePasswordDto } from './dto/change-password.dto';
-import { PaginationDto } from 'src/common/dto/pagination.dto';
 
 @ApiTags('Usuarios')
 @Controller('users')
@@ -36,8 +35,8 @@ export class UserController {
   @UseGuards(AuthGuard, RoleGuards) */
   @Get()
   @HttpCode(HttpStatus.OK)
-  async getAllUsers(@Query() paginationDto: PaginationDto) {
-    return await this.userService.getAllUsers(paginationDto);
+  async getAllUsers() {
+    return await this.userService.getAllUsers();
   }
 
   @ApiOperation({ summary: 'Filtra usuarios por nombre' })

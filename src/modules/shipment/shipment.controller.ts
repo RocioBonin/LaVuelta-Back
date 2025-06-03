@@ -3,7 +3,6 @@ import { ShipmentService } from './shipment.service';
 import { CreateShipmentDto } from './dto/shipment.dto';
 import { ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { StatusShipmentDto } from './dto/status-update-shipment.dto';
-import { PaginationDto } from 'src/common/dto/pagination.dto';
 
 @Controller('shipment')
 export class ShipmentController {
@@ -20,8 +19,8 @@ export class ShipmentController {
 
   @Get()
   @ApiOperation({ summary: 'Trae todos los envíos' })
-  async findAll(@Query() paginationDto: PaginationDto) {
-    return await this.shipmentService.findAll(paginationDto);
+  async findAll() {
+    return await this.shipmentService.findAll();
   }
 
   @ApiOperation({ summary: 'Elimina un envío por id' })
