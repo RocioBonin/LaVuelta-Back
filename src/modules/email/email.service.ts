@@ -31,7 +31,7 @@ export class EmailService {
         const { from, subject, message } = formContactDto;
         await this.mailerService.sendMail({
           from: from,
-          to: 'La Vuelta Logistica <codigototaldevs@gmail.com>',
+          to: 'Glu Logistica <logisticaglu@gmail.com>',
           subject: subject,
           html: message,
         });

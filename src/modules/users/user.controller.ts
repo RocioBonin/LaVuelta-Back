@@ -8,6 +8,7 @@ import {
   Param,
   Patch,
   Query,
+  SetMetadata,
   UseGuards,
 } from '@nestjs/common';
 import { UserService } from './user.service';
@@ -31,8 +32,8 @@ export class UserController {
   constructor(private userService: UserService) {}
 
   @ApiOperation({ summary: 'Obtiene todos los usuarios' })
-  /* @Roles(Role.Admin)
-  @UseGuards(AuthGuard, RoleGuards) */
+  @UseGuards(AuthGuard, RoleGuards)
+  @Roles(Role.Admin)
   @Get()
   @HttpCode(HttpStatus.OK)
   async getAllUsers() {
@@ -40,8 +41,7 @@ export class UserController {
   }
 
   @ApiOperation({ summary: 'Filtra usuarios por nombre' })
-  /* @Roles(Role.Admin)
-    @UseGuards(AuthGuard, RoleGuards) */
+  @UseGuards( AuthGuard )
   @Get('byName')
   @HttpCode(HttpStatus.OK)
   async getUserByName(@Query('name') fullname: string) {
@@ -51,6 +51,7 @@ export class UserController {
   @ApiOperation({ summary: 'Buscar usuario por ID' })
   @ApiResponse({ status: 200, description: 'Usuario encontrado.', type: User })
   @ApiResponse({ status: 404, description: 'Usuario no encontrado.' })
+  @UseGuards( AuthGuard )
   @Get(':id/byId')
   async findUserById(@Param('id') userId: string) {
     return await this.userService.getUserById(userId);
@@ -59,8 +60,7 @@ export class UserController {
   @ApiOperation({
     summary: 'Filtra usuarios por Rol, estos pueden ser Usuarios o Admin',
   })
-  /* @Roles(Role.Admin)
-    @UseGuards(AuthGuard, RoleGuards) */
+  @UseGuards( AuthGuard )
   @Get('find-userRol')
   @HttpCode(HttpStatus.OK)
   async getUserByRole(@Query('role') userRole: Role) {
@@ -76,6 +76,7 @@ export class UserController {
     status: 404,
     description: 'Usuario no encontrado.',
   })
+  @UseGuards( AuthGuard )
   @Patch(':id')
   @HttpCode(HttpStatus.OK)
   async updateUser(
@@ -94,12 +95,16 @@ export class UserController {
     status: 404,
     description: 'Usuario no encontrado.',
   })
+  @UseGuards(AuthGuard, RoleGuards)
+  @Roles(Role.Admin)
   @Delete(':id')
   async deletedUser(@Param('id') id: string) {
     return await this.userService.deletedUser(id);
   }
 
   @ApiOperation({ summary: 'Asignar rol de Admin a un Usuario' })
+  @UseGuards(AuthGuard, RoleGuards)
+  @Roles(Role.Admin)
   @Patch(':id/assign-admin')
   @HttpCode(HttpStatus.OK)
   async assignAdmin(@Param('id') userId: string) {
@@ -107,6 +112,8 @@ export class UserController {
   }
 
   @ApiOperation({ summary: 'Remueve el rol de Admin' })
+  @UseGuards(AuthGuard, RoleGuards)
+  @Roles(Role.Admin)
   @Patch(':id/remove-rol-admin')
   @HttpCode(HttpStatus.OK)
   async removeAdmin(@Param('id') userId: string) {
@@ -114,6 +121,7 @@ export class UserController {
   }
 
   @ApiOperation({ summary: 'Cambia la contraseña del usuario' })
+  @UseGuards( AuthGuard )
   @Patch(':id/changePass')
   @HttpCode(HttpStatus.OK)
   async changePassword(

@@ -1,6 +1,8 @@
-import { Controller, Post, Body, Get, Param, HttpException, HttpStatus} from '@nestjs/common';
+import { Controller, Post, Body, Get, Param, HttpException, HttpStatus, UseGuards} from '@nestjs/common';
 import { MercadopagoService } from './mercadopago.service';
+import { AuthGuard } from 'src/common/guards/auth.guard';
 
+@UseGuards(AuthGuard)
 @Controller('mercadopago')
 export class MercadopagoController {
   constructor(private readonly mercadopagoService: MercadopagoService) {}
