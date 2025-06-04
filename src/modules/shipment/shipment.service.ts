@@ -22,6 +22,8 @@ export class ShipmentService {
   constructor(
     @InjectRepository(Shipment)
     private readonly shipmentRepository: Repository<Shipment>,
+    @InjectRepository(User)
+    private readonly userRepository: Repository<User>,
     private readonly dataSource: DataSource,
   ) {}
 
@@ -101,6 +103,17 @@ export class ShipmentService {
     } finally {
       await queryRunner.release();
     }
+  }
+
+  async getShipmentsByNameCompany(companyName: string) {
+    const user = await this.userRepository.find({
+      where: { company: companyName },
+      relations: ['shipments'],
+    });
+
+    const shipments = user.flatMap(user => user.shipments);
+
+    return shipments; 
   }
 
   async findAll() {

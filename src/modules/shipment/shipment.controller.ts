@@ -1,4 +1,13 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  Query,
+} from '@nestjs/common';
 import { ShipmentService } from './shipment.service';
 import { CreateShipmentDto } from './dto/shipment.dto';
 import { ApiOperation, ApiResponse } from '@nestjs/swagger';
@@ -15,6 +24,17 @@ export class ShipmentController {
   @Post()
   async createShipment(@Body() dto: CreateShipmentDto) {
     return await this.shipmentService.createShipment(dto);
+  }
+
+  @ApiOperation({ summary: 'Obtener todos los envios de una empresa' })
+  @ApiResponse({
+    status: 200,
+    description: 'Lista de envios obtenida exitosamente',
+  })
+  /* @UseGuards(AuthGuard) */
+  @Get(':companyName')
+  async getShipmentsByNameCompany(@Param('companyName') companyName: string) {
+    return await this.shipmentService.getShipmentsByNameCompany(companyName);
   }
 
   @ApiOperation({ summary: 'Trae todos los envíos' })
@@ -37,7 +57,7 @@ export class ShipmentController {
   @Patch(':id/status')
   async updateStatus(
     @Body() dto: StatusShipmentDto,
-    @Param('id') shipmentId: string, 
+    @Param('id') shipmentId: string,
   ) {
     return await this.shipmentService.updateStatus(shipmentId, dto.status);
   }
