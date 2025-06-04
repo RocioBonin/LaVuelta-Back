@@ -12,4 +12,8 @@ export class CreateProductDto {
   @IsString()
   @IsNotEmpty()
   company: string;
+
+  @IsString()
+  @IsOptional()
+  customerId?: string;
 }

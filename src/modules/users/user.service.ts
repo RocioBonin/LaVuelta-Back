@@ -115,6 +115,7 @@ export class UserService {
   async getUserByCompanyName(company: string) {
     const user = await this.userRepository.findOne({
       where: { company: company },
+      relations:['deposit']
     });
 
     if (!user) {

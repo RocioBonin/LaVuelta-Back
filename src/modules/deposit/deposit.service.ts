@@ -11,17 +11,31 @@ import { UserService } from '../users/user.service';
 import { Deposit } from './entities/deposit.entity';
 import { plainToInstance } from 'class-transformer';
 import { UserResponseDto } from '../users/dto/user-response.dto';
+import { User } from '../users/entities/user.entity';
 
 @Injectable()
 export class DepositService {
   constructor(
     @InjectRepository(Deposit)
     private depositRepository: Repository<Deposit>,
+    @InjectRepository(User)
+    private userRepository: Repository<User>,
     private userService: UserService,
   ) {}
 
   async getProducts() {
     return await this.depositRepository.find();
+  }
+
+  async getProductsByNameCompany(companyName: string) {
+    const user = await this.userRepository.find({
+      where: { company: companyName },
+      relations: ['deposit'],
+    });
+
+    const products = user.flatMap(user => user.deposit);
+
+    return products;
   }
 
   async createProduct(createProductDto: CreateProductDto) {

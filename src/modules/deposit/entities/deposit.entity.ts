@@ -6,17 +6,17 @@ export class Deposit {
     @PrimaryGeneratedColumn('uuid')
     id: string;
 
-    @Column({ length: 20 })
+    @Column({ length: 100 })
     product: string; 
 
     @Column({ type: 'int' })
     quantity: number;
 
-    @Column({ length: 20 })
+    @Column({ length: 100 })
     company: string;
 
     @Column() 
-    customerId: string;
+    customerId?: string;
 
     @ManyToOne(() => User, user => user.deposit, { onDelete: 'CASCADE' })
     @JoinColumn({ name: 'customerId' })
