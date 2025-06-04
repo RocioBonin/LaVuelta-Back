@@ -16,7 +16,7 @@ import { EmailService } from "./email.service";
                 },
               },
               defaults: {
-                from: 'La Vuelta Logistica <codigototaldevs@gmail.com>',
+                from: 'Glu Logistica <logisticaglu@gmail.com>',
               },
         })
     ],
