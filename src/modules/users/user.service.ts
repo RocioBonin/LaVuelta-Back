@@ -63,7 +63,7 @@ export class UserService {
       .replace('{{password}}', plainPassword);
 
     const to = [newUser.email];
-    const subject = 'Tu cuenta ha sido creada en La Vuelta Logística';
+    const subject = 'Tu cuenta ha sido creada en Glu Logística';
 
     await this.emailService.sendWelcomeEmail({ message, to, subject });
 
