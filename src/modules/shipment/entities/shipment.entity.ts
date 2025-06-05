@@ -27,6 +27,12 @@ export class Shipment {
   @Column()
   company: string;
 
+  @Column()
+  price: number;
+
+  @Column()
+  deliveryDate: Date;
+
   @Column({
     type: 'enum',
     enum: State,

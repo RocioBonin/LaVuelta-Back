@@ -53,6 +53,18 @@ export class ShipmentService {
         customer,
       });
 
+      if (shipment.locality === 'CABA') {
+        shipment.price = 3000;
+      } else if (shipment.locality === 'GBA 1') {
+        shipment.price = 3800;
+      } else if (shipment.locality === 'GBA 2') {
+        shipment.price = 4800;
+      } else if (shipment.locality === 'GBA 3') {
+        shipment.price = 7000;
+      } else {
+        shipment.price = 3000;
+      }
+
       const savedShipment = await queryRunner.manager.save(shipment);
       const shipmentProducts: ShipmentProduct[] = [];
 
@@ -111,13 +123,13 @@ export class ShipmentService {
       relations: ['shipments'],
     });
 
-    const shipments = user.flatMap(user => user.shipments);
+    const shipments = user.flatMap((user) => user.shipments);
 
-    return shipments; 
+    return shipments;
   }
 
   async findAll() {
-     return await this.shipmentRepository.find({
+    return await this.shipmentRepository.find({
       relations: ['customer', 'shipmentProducts', 'shipmentProducts.product'],
     });
   }
@@ -146,6 +158,11 @@ export class ShipmentService {
     }
 
     shipment.status = status;
+
+    if (status === State.DELIVERED) {
+      shipment.deliveryDate = new Date();
+    }
+
     await this.shipmentRepository.save(shipment);
     return { message: 'Estado actualizado correctamente' };
   }

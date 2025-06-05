@@ -35,6 +35,12 @@ export class ShipmentResponseDto {
   status: string;
 
   @Expose()
+  deliveryDate: Date;
+
+  @Expose()
+  price: number;
+
+  @Expose()
   @Type(() => UserResponseDto)
   customer: UserResponseDto;
 }
