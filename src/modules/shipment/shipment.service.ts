@@ -54,15 +54,15 @@ export class ShipmentService {
       });
 
       if (shipment.province === 'CABA') {
-        shipment.price = 3000;
+        shipment.price = 3750;
       } else if (shipment.province === 'GBA 1') {
-        shipment.price = 3800;
+        shipment.price = 4550;
       } else if (shipment.province === 'GBA 2') {
-        shipment.price = 4800;
+        shipment.price = 5550;
       } else if (shipment.province === 'GBA 3') {
-        shipment.price = 7000;
+        shipment.price = 7750;
       } else {
-        shipment.price = 3000;
+        shipment.price = 3750;
       }
 
       const savedShipment = await queryRunner.manager.save(shipment);
@@ -120,7 +120,7 @@ export class ShipmentService {
   async getShipmentsByNameCompany(companyName: string) {
     const user = await this.userRepository.find({
       where: { company: companyName },
-      relations: ['shipments'],
+      relations: ['customer', 'shipmentProducts', 'shipmentProducts.product'],
     });
 
     const shipments = user.flatMap((user) => user.shipments);

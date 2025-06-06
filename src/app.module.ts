@@ -33,7 +33,7 @@ import { ShipmentModule } from './modules/shipment/shipment.module';
     NewsletterModule,
     JwtModule.register({
       global: true,
-      signOptions: {expiresIn: '1h'},
+      signOptions: { expiresIn: '30d' },
       secret: process.env.JWT_SECRET,
     }),
     MercadopagoModule,
