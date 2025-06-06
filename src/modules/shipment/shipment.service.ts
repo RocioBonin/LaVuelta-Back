@@ -53,13 +53,13 @@ export class ShipmentService {
         customer,
       });
 
-      if (shipment.locality === 'CABA') {
+      if (shipment.province === 'CABA') {
         shipment.price = 3000;
-      } else if (shipment.locality === 'GBA 1') {
+      } else if (shipment.province === 'GBA 1') {
         shipment.price = 3800;
-      } else if (shipment.locality === 'GBA 2') {
+      } else if (shipment.province === 'GBA 2') {
         shipment.price = 4800;
-      } else if (shipment.locality === 'GBA 3') {
+      } else if (shipment.province === 'GBA 3') {
         shipment.price = 7000;
       } else {
         shipment.price = 3000;
