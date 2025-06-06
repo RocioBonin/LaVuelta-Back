@@ -27,10 +27,10 @@ export class Shipment {
   @Column()
   company: string;
 
-  @Column()
+  @Column({nullable: true})
   price: number;
 
-  @Column()
+  @Column({nullable: true})
   deliveryDate: Date;
 
   @Column({

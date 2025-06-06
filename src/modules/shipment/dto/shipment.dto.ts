@@ -26,8 +26,9 @@ export class CreateShipmentDto {
   @IsString()
   province: string;
 
+  @IsOptional()
   @IsNumber()
-  price: number;
+  price?: number;
 
   @IsOptional()
   @IsDate()
