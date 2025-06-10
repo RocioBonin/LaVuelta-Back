@@ -16,6 +16,7 @@ import { plainToInstance } from 'class-transformer';
 import { ShipmentResponseDto } from './dto/shipment-response.dto';
 import { StatusShipmentDto } from './dto/status-update-shipment.dto';
 import { State } from './enums/state.enum';
+import { ShipmentType } from './enums/shipment-type';
 
 @Injectable()
 export class ShipmentService {
@@ -53,18 +54,26 @@ export class ShipmentService {
         customer,
       });
 
-      if (shipment.province === 'CABA') {
+      if (shipment.shipmentType === ShipmentType.BRANCH) {
         shipment.price = 3750;
-      } else if (shipment.province === 'GBA 1') {
-        shipment.price = 4550;
-      } else if (shipment.province === 'GBA 2') {
-        shipment.price = 5550;
-      } else if (shipment.province === 'GBA 3') {
-        shipment.price = 7750;
       } else {
-        shipment.price = 3750;
+        switch (shipment.province) {
+          case 'CABA':
+            shipment.price = 3750;
+            break;
+          case 'GBA 1':
+            shipment.price = 4550;
+            break;
+          case 'GBA 2':
+            shipment.price = 5550;
+            break;
+          case 'GBA 3':
+            shipment.price = 7750;
+            break;
+          default:
+            shipment.price = 3750;
+        }
       }
-
       const savedShipment = await queryRunner.manager.save(shipment);
       const shipmentProducts: ShipmentProduct[] = [];
 
@@ -118,12 +127,12 @@ export class ShipmentService {
   }
 
   async getShipmentsByNameCompany(companyName: string) {
-    const user = await this.userRepository.find({
+    const users = await this.userRepository.find({
       where: { company: companyName },
-      relations: ['shipments', 'deposit'],
+      relations: ['shipments', 'shipments.shipmentProducts', 'deposit'],
     });
 
-    const shipments = user.flatMap((user) => user.shipments);
+    const shipments = users.flatMap((user) => user.shipments);
 
     return shipments;
   }
