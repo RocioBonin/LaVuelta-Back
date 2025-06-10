@@ -120,7 +120,7 @@ export class ShipmentService {
   async getShipmentsByNameCompany(companyName: string) {
     const user = await this.userRepository.find({
       where: { company: companyName },
-      relations: ['customer', 'shipmentProducts', 'shipmentProducts.product'],
+      relations: ['shipments', 'deposit'],
     });
 
     const shipments = user.flatMap((user) => user.shipments);

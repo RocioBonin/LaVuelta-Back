@@ -27,8 +27,8 @@ export class ShipmentController {
   @ApiResponse({ status: 201, description: 'Envío creado correctamente' })
   @ApiResponse({ status: 404, description: 'Cliente o producto no encontrado' })
   @ApiResponse({ status: 409, description: 'Stock insuficiente' })
-  @UseGuards(AuthGuard, RoleGuards)
-  @Roles(Role.Admin)
+  /* @UseGuards(AuthGuard, RoleGuards)
+  @Roles(Role.Admin) */
   @Post()
   async createShipment(@Body() dto: CreateShipmentDto) {
     return await this.shipmentService.createShipment(dto);
@@ -39,7 +39,7 @@ export class ShipmentController {
     status: 200,
     description: 'Lista de envios obtenida exitosamente',
   })
-  @UseGuards(AuthGuard)
+  /* @UseGuards(AuthGuard) */
   @Get(':companyName')
   async getShipmentsByNameCompany(@Param('companyName') companyName: string) {
     return await this.shipmentService.getShipmentsByNameCompany(companyName);
