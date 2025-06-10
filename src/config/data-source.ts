@@ -11,7 +11,7 @@ const PostgresDataSourceOptions: DataSourceOptions = {
   port: parseInt(process.env.DB_PORT),
   username: process.env.DB_USERNAME,
   password: process.env.DB_PASSWORD,
-  synchronize: false,
+  synchronize: true,
   dropSchema: false,
   logging: ['error'],
   ssl: process.env.DB_SSL === 'true' ? { rejectUnauthorized: false } : false,

@@ -1,37 +1,37 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { UserService } from 'src/modules/users/user.service';
-import * as bcrypt from 'bcryptjs';
+import { compare } from 'bcrypt';
 import { SignInAuthDto } from './dto/signin-auth.dto';
 import { JwtService } from '@nestjs/jwt';
-import { SignUpAuthDto } from './dto/signup-auth.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { User } from '../users/entities/user.entity';
+import { plainToInstance } from 'class-transformer';
+import { UserResponseDto } from '../users/dto/user-response.dto';
+import { CreateUserDto } from '../users/dto/create-user.dto';
 
 @Injectable()
 export class AuthServices {
   constructor(
     private readonly usersService: UserService,
     private readonly jwtServices: JwtService,
+    @InjectRepository(User)
+    private readonly userRepository: Repository<User>,
   ) {}
 
-  async signUp(signUpAuthDto: SignUpAuthDto) {
-    if (signUpAuthDto.password !== signUpAuthDto.repeatPassword) {
-      throw new HttpException('Las contraseñas no coinciden', 400);
-    }
-
-    const user = await this.usersService.createUser(signUpAuthDto);
-
-    return user;
-    
+  async signUp(signUpAuthDto: CreateUserDto) {
+    return await this.usersService.createUser(signUpAuthDto);
   }
 
-  async signIn(credentials: SignInAuthDto) {
-    const user = await this.usersService.findEmail(credentials.emailSignIn);
+  async signIn({ emailSignIn, passwordSignIn }: SignInAuthDto) {
+    const user = await this.userRepository.findOne({where: { email: emailSignIn } });
 
     if (!user) {
       throw new HttpException('Usuario no encontrado', 404);
     }
 
-    const isPasswordMatching = await bcrypt.compare(
-        credentials.passwordSignIn,
+    const isPasswordMatching = await compare(
+        passwordSignIn,
         user.password,
       );
 
@@ -50,6 +50,10 @@ export class AuthServices {
 
     const token = this.jwtServices.sign(userPayload);
 
-    return { token, user };
+    const userResponse = plainToInstance(UserResponseDto, user, {
+          excludeExtraneousValues: true,
+        });
+
+      return {token, userResponse};
   }
 }

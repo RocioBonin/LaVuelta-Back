@@ -2,7 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { Role } from '../enum/role.enum';
 import {
   IsBoolean,
-  IsDateString,
+  IsDate,
   IsEmail,
   IsEnum,
   IsNotEmpty,
@@ -12,35 +12,28 @@ import {
   Length,
   Matches,
 } from 'class-validator';
+import { Type } from 'class-transformer';
 
 export class CreateUserDto {
   @ApiProperty({
     type: String,
-    example: 'John',
+    example: 'John Lenon',
     description:
-      'Indica el nombre del usuario, debe tener como mínimo 3 caracteres.',
+      'Indica el nombre completo del usuario, debe tener como mínimo 3 caracteres.',
   })
   @IsString()
   @Length(3, 80)
-  name: string;
+  fullName: string;
 
   @ApiProperty({
     type: String,
-    example: 'Doe',
+    example: 'John Lenon',
     description:
-      'Indica el apellido del usuario, debe tener como mínimo 3 caracteres',
+      'Indica el nombre de el cliente ya sea una empresa o persona',
   })
   @IsString()
   @Length(3, 80)
-  surname: string;
-
-  @ApiProperty({
-    type: String,
-    description: 'Nombre de la compañia'
-  })
-  @IsString()
-  @IsOptional()
-  companyName?: string;
+  company: string;
 
   @ApiProperty({
     type: String,
@@ -58,15 +51,14 @@ export class CreateUserDto {
     example: '12345678',
   })
   @IsString()
-  idNumber: string;
+  dni: string;
 
   @ApiProperty({
     type: String,
-    required: true,
     description: 'Contraseña del usuario',
     example: 'Jhon1234@',
   })
-  @IsNotEmpty()
+  @IsOptional()
   @IsStrongPassword({
     minLowercase: 1,
     minUppercase: 1,
@@ -77,21 +69,23 @@ export class CreateUserDto {
     message:
       'La contraseña debe contener al menos un carácter especial: !@#$%^&*',
   })
-  password: string;
+  password?: string;
 
   @ApiProperty({
     type: String,
     description: 'Localidad del usuario',
     example: 'Argentina',
   })
+  @IsNotEmpty()
   @IsString()
-  location: string;
+  address: string;
 
   @ApiProperty({
     type: String,
     description: 'Número de télefono',
     example: '1134256282',
   })
+  @IsNotEmpty()
   @IsString()
   phone: string;
 
@@ -99,13 +93,15 @@ export class CreateUserDto {
     description: 'Fecha de nacimiento del usuario',
     example: '2025-01-03',
   })
-  @IsDateString()
-  birthdate: string;
+  @IsNotEmpty()
+  @IsDate()
+  @Type(() => Date)
+  birthdate: Date;
 
   @ApiProperty({
     enum: Role,
     description: 'Rol asignado al usuario',
-    default: Role.User
+    default: Role.Customer,
   })
   @IsEnum(Role)
   @IsOptional()
@@ -120,14 +116,4 @@ export class CreateUserDto {
   @IsBoolean()
   @IsOptional()
   newsletter?: boolean;
-
-  @ApiProperty({
-    description:'Indica si la cuenta del usuario está activa.',
-    default: true,
-    example: true,
-  })
-  @IsBoolean()
-  @IsOptional()
-  isActive?: boolean;
-
 }

@@ -1,56 +1,51 @@
-import { Column, DeleteDateColumn, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
-import { v4 as uuid } from 'uuid';
-import { Role } from "../enum/role.enum";
-import { Payment } from "src/modules/mercadopago/entities/payment.entity";
-import { Package } from "src/modules/package/entities/package.entity";
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Role } from '../enum/role.enum';
+import { Deposit } from 'src/modules/deposit/entities/deposit.entity';
+import { Exclude } from 'class-transformer';
+import { Shipment } from 'src/modules/shipment/entities/shipment.entity';
 
-@Entity({name: 'users'})
+@Entity({ name: 'users' })
 export class User {
-    @PrimaryGeneratedColumn('uuid')
-    id: string = uuid();
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
 
-    @Column({ length: 50 })
-    name: string;
+  @Column({ length: 50 })
+  fullName: string;
 
-    @Column({ length: 50})
-    surname: string;
+  @Column({ unique: true })
+  email: string;
 
-    @Column({ nullable : true })
-    companyName?: string;
+  @Column({ unique: true })
+  dni: string;
 
-    @Column({ unique: true })
-    idNumber: string;
+  @Exclude()
+  @Column()
+  password: string;
 
-    @Column()
-    location: string;
+  @Column()
+  address: string;
 
-    @Column({ unique: true })
-    phone: string;
+  @Column({ unique: true })
+  phone: string;
 
-    @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP'})
-    birthdate: Date;
+  @Column()
+  birthdate: Date;
 
-    @Column({ unique: true })
-    email: string;
+  @Column()
+  company: string;
 
-    @Column()
-    password: string;
+  @Column({ type: 'enum', enum: Role, default: Role.Customer })
+  role: Role;
 
-    @Column({ type: 'enum', enum: Role, default: Role.User })
-    role: Role;
+  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+  createdAt: Date;
 
-    @DeleteDateColumn()
-    disabledAt?: Date;
+  @Column({ default: false })
+  newsletter: boolean;
 
-    @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
-    createAt: Date;
+  @OneToMany(() => Deposit, (deposito) => deposito.customers)
+  deposit: Deposit[];
 
-    @Column({default: false})
-    newsletter: boolean;
-
-    @OneToMany(() => Payment, (payment) => payment.user)
-    payments: Payment[];
-  
-    @OneToMany(() => Package, (pkg) => pkg.user)
-    packages: Package[];
+  @OneToMany(() => Shipment, (shipment) => shipment.customer)
+  shipments: Shipment[];
 }

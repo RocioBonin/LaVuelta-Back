@@ -4,7 +4,7 @@ import { Repository } from 'typeorm';
 import { Subscriber } from './entities/suscriber.entity';
 import { User } from 'src/modules/users/entities/user.entity';
 import { SubscribeUserDto } from './dto/suscription-user.dto';
-import { emailHtml } from 'src/modules/email/templates/email-welcome';
+import { emailHtml } from 'src/modules/email/templates/email-newsletter';
 import { EmailService } from 'src/modules/email/email.service';
 
 @Injectable()

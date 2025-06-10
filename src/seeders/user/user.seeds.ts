@@ -1,110 +1,174 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { User } from 'src/modules/users/entities/user.entity';
-import { Role } from 'src/modules/users/enum/role.enum';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
-import { Package } from 'src/modules/package/entities/package.entity';
+import { User } from 'src/modules/users/entities/user.entity';
+import { Role } from 'src/modules/users/enum/role.enum';
 
 @Injectable()
 export class UsersSeeds {
   constructor(
     @InjectRepository(User)
-    private readonly userRepository: Repository<User>,
-
-    @InjectRepository(Package)
-    private readonly packageRepository: Repository<Package>, // Inyecta el repositorio de Paqueteria
+    private readonly userRepository: Repository<User>
   ) {}
 
-  async seedUsers() {
+  async run() {
     const users = [
       {
-        name: 'Jane',
-        surname: 'Smith',
-        companyName: null,
+        fullName: 'Carlos Gomez',
         email: 'admin@example.com',
+        dni: '2345678990',
         password: 'Admin123@',
-        repeatPassword: 'Admin123@',
-        idNumber: '123456',
-        location: 'example',
-        phone: '123456',
-        birthdate: '03-08-1999',
-        role: Role.Admin,
-        packageNumber: '76549354',
+        address: 'Córdoba',
+        phone: '222222',
+        birthdate: new Date('1985-06-15'),
+        company: '',
+        role: Role.Admin
       },
       {
-        name: 'Jhon',
-        surname: 'Doe',
-        companyName: null,
-        email: 'user1@example.com',
-        password: 'User123@',
-        repeatPassword: 'User123@',
-        idNumber: '678910',
-        location: 'example',
-        phone: '123457',
-        birthdate: '04-01-2001',
-        newsletter: false,
-        role: Role.User
+        fullName: 'Lautaro Gando',
+        email: 'lautarogandodev@gmail.com',
+        dni: '2365346534',
+        password: 'Ganditocapo@',
+        address: 'Córdoba',
+        phone: '265373',
+        birthdate: new Date('1985-06-15'),
+        company: '',
+        role: Role.Admin
       },
       {
-        name: 'Claudio',
-        surname: 'Martinez',
-        companyName: 'Nike S.A',
-        email: 'user2@example.com',
+        fullName: 'Laura Perez',
+        email: 'laura@example.com',
+        dni: '34567890',
         password: 'User234@',
-        repeatPassword: 'User234@',
-        idNumber: '654634',
-        location: 'example',
-        phone: '123458',
-        birthdate: '05-06-2003',
+        address: 'Mendoza',
+        phone: '3333333333',
+        birthdate: new Date('1992-08-10'),
+        role: Role.Customer,
+        company: 'Lauri',
         newsletter: true,
-        role: Role.User,
-        packageNumber: '765435678',
       },
+      {
+        fullName: 'Ana Ruiz',
+        email: 'ana@example.com',
+        password: 'User456@',
+        dni: '56789012',
+        address: 'Salta',
+        phone: '55555555654',
+        birthdate: new Date('1988-12-05'),
+        role: Role.Customer,
+        company: 'Ana Ruiz',
+        newsletter: true,
+      },
+      {
+        fullName: 'Tomas Vega',
+        email: 'tomas@example.com',
+        password: 'User901@',
+        dni: '01234567',
+        address: 'San Juan',
+        phone: '1010101010',
+        birthdate: new Date('1996-05-14'),
+        company: 'Tomatito',
+        role: Role.Customer
+      },
+      {
+        fullName: 'Lucia Mendez',
+        email: 'lucia@example.com',
+        password: 'User000@',
+        dni: '77777777',
+        address: 'La Plata',
+        phone: '4444444444',
+        birthdate: new Date('1990-02-20'),
+        company: 'Lucia Mendez',
+        role: Role.Customer,
+        newsletter: true,
+      },
+      {
+        fullName: 'Mariano Lopez',
+        email: 'mariano@example.com',
+        password: 'User111@',
+        dni: '88888888',
+        address: 'Rosario',
+        phone: '5555555555444',
+        birthdate: new Date('1987-07-19'),
+        company: 'Marianito',
+        role: Role.Customer,
+      },
+      {
+        fullName: 'Julieta Salas',
+        dni: '99999999',
+        address: 'Buenos Aires',
+        phone: '6666666666',
+        birthdate: new Date('1991-11-11'),
+        email: 'julieta@example.com',
+        password: 'User222@',
+        company: 'Julieta Salas',
+        role: Role.Customer,
+        newsletter: true,
+      },
+      {
+        fullName: 'Ricardo Fernandez',
+        dni: '66666666',
+        address: 'Tucumán',
+        phone: '7777777777',
+        birthdate: new Date('1986-10-10'),
+        email: 'ricardo@example.com',
+        password: 'User333@',
+        company: 'Ricardito',
+        role: Role.Customer,
+        newsletter: true,
+      },
+      {
+        fullName: 'Valeria Campos',
+        dni: '55555555',
+        address: 'Neuquén',
+        phone: '8888888888',
+        birthdate: new Date('1993-03-03'),
+        email: 'valeria@example.com',
+        password: 'User444@',
+        company: 'Valeria',
+        role: Role.Customer,
+        newsletter: true,
+      },
+      {
+        fullName: 'Ezequiel Martinez',
+        dni: '44444444',
+        address: 'Misiones',
+        phone: '9999999999',
+        birthdate: new Date('1989-05-05'),
+        email: 'ezequielMartinez@example.com',
+        password: 'User5556@',
+        company: 'Ezequiel Martinez',
+        role: Role.Customer,
+      },
+      {
+        fullName: 'Eze Marquez',
+        dni: '444543643',
+        address: 'Misiones',
+        phone: '99996543654',
+        birthdate: new Date('1988-05-05'),
+        email: 'ezequiel@example.com',
+        password: 'User555@',
+        company: 'Eze Marquez',
+        role: Role.Customer,
+      }
     ];
 
-    try {
-      for (const userData of users) {
-        const { email, password, packageNumber, ...rest } = userData;
+    for (const data of users) {
+      const exists = await this.userRepository.findOne({ where: { email: data.email } });
+      if (exists) continue;
 
-        // Verificar si el usuario ya existe
-        const existingUser = await this.userRepository.findOne({
-          where: { email },
-        });
+      const hashedPassword = await bcrypt.hash(data.password, 10);
+      const user = this.userRepository.create({
+        ...data,
+        password: hashedPassword,
+      });
 
-        if (!existingUser) {
-          // Hashear la contraseña
-          const hashedPassword = await bcrypt.hash(password, 10);
-
-          // Buscar el paquete por su número
-          const pkg = await this.packageRepository.findOne({
-            where: { packageNumber }, // Buscar por el número de paquete
-          });
-
-          // Si el paquete no se encuentra, ignorar este usuario
-          if (!pkg) {
-            console.error(`Paquete con número ${packageNumber} no encontrado.`);
-            continue;
-          }
-
-          // Crear nuevo usuario
-          const user = this.userRepository.create({
-            ...rest,
-            email,
-            password: hashedPassword,
-            packages: [pkg], // Asignar el paquete encontrado
-          });
-
-          // Guardar usuario en la base de datos
-          await this.userRepository.save(user);
-        }
-      }
-
-      console.log('Preload de usuarios exitoso!');
-      
-    } catch (error) {
-      console.error('Error en la precarga de usuarios:', error);
+      await this.userRepository.save(user);
     }
+
+    console.log('Usuarios cargados correctamente.');
   }
 }
+
 

@@ -11,7 +11,8 @@ import { NewsletterModule } from './modules/newsletter/newsletter.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { MercadopagoModule } from './modules/mercadopago/mercadopago.module';
-import { PackageModule } from './modules/package/package.module';
+import { DepositModule } from './modules/deposit/deposit.module';
+import { ShipmentModule } from './modules/shipment/shipment.module';
 
 @Module({
   imports: [
@@ -32,11 +33,12 @@ import { PackageModule } from './modules/package/package.module';
     NewsletterModule,
     JwtModule.register({
       global: true,
-      signOptions: {expiresIn: '1h'},
+      signOptions: { expiresIn: '30d' },
       secret: process.env.JWT_SECRET,
     }),
     MercadopagoModule,
-    PackageModule,
+    DepositModule,
+    ShipmentModule, 
   ],
   controllers: [AppController],
   providers: [AppService],
