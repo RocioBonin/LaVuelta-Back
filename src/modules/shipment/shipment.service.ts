@@ -134,7 +134,9 @@ export class ShipmentService {
 
     const shipments = users.flatMap((user) => user.shipments);
 
-    return shipments;
+    return plainToInstance(ShipmentResponseDto, shipments, {
+        excludeExtraneousValues: true,
+      });
   }
 
   async findAll() {
