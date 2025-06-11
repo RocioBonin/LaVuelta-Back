@@ -16,8 +16,8 @@ export class DepositController {
 
     @ApiOperation({ summary: 'Obtener todos los productos en deposito' })
     @ApiResponse({ status: 200, description: 'Lista de productos obtenida exitosamente' })
-    @UseGuards(AuthGuard, RoleGuards)
-    @Roles(Role.Admin)
+    /* @UseGuards(AuthGuard, RoleGuards)
+    @Roles(Role.Admin) */
     @Get()
     async getProducts() {
         return await this.depositService.getProducts();
