@@ -32,8 +32,8 @@ export class UserController {
   constructor(private userService: UserService) {}
 
   @ApiOperation({ summary: 'Obtiene todos los usuarios' })
-  /* @UseGuards(AuthGuard, RoleGuards)
-  @Roles(Role.Admin) */
+  @UseGuards(AuthGuard, RoleGuards)
+  @Roles(Role.Admin)
   @Get()
   @HttpCode(HttpStatus.OK)
   async getAllUsers() {
