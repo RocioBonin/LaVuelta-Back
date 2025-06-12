@@ -25,6 +25,8 @@ export class ShipmentService {
     private readonly shipmentRepository: Repository<Shipment>,
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
+    @InjectRepository(Deposit)
+    private readonly depositRepository: Repository<Deposit>,
     private readonly dataSource: DataSource,
   ) {}
 
@@ -51,6 +53,7 @@ export class ShipmentService {
         locality: createShipmentDto.locality,
         postalCode: createShipmentDto.postalCode,
         province: createShipmentDto.province,
+        deliveryDate: createShipmentDto.deliveryDate,
         customer,
       });
 
@@ -89,10 +92,6 @@ export class ShipmentService {
             `Producto con ID ${depositId} no encontrado`,
           );
         }
-
-        const availableToSend = Math.min(depositProduct.quantity, quantity);
-        depositProduct.quantity -= availableToSend;
-        await queryRunner.manager.save(depositProduct);
 
         const shipmentProduct = queryRunner.manager.create(ShipmentProduct, {
           shipment: savedShipment,
@@ -159,22 +158,46 @@ export class ShipmentService {
     return { message: 'Envío elimiando exítosamente' };
   }
 
-  async updateStatus(shipmentId: string, status: State) {
-    const shipment = await this.shipmentRepository.findOne({
-      where: { id: shipmentId },
-    });
+  async updateStatus(shipmentId: string, status: State, date?: string | Date) {
+  const shipment = await this.shipmentRepository.findOne({
+    where: { id: shipmentId },
+    relations: ['shipmentProducts', 'shipmentProducts.product'],
+  });
 
-    if (!shipment) {
-      throw new NotFoundException('Envío no encontrado');
-    }
-
-    shipment.status = status;
-
-    if (status === State.DELIVERED) {
-      shipment.deliveryDate = new Date();
-    }
-
-    await this.shipmentRepository.save(shipment);
-    return { message: 'Estado actualizado correctamente' };
+  if (!shipment) {
+    throw new NotFoundException('Envío no encontrado');
   }
+
+  if (status === State.PACKAGING) {
+    for (const sp of shipment.shipmentProducts) {
+      const depositProduct = await this.depositRepository.findOne({
+        where: { id: sp.product.id },
+      });
+
+      if (!depositProduct) {
+        throw new NotFoundException(`Producto con ID ${sp.product.id} no encontrado`);
+      }
+
+      if (depositProduct.quantity < sp.quantity) {
+        throw new BadRequestException(
+          `Stock insuficiente para el producto con ID ${sp.product.id}`,
+        );
+      }
+
+      depositProduct.quantity -= sp.quantity;
+      await this.depositRepository.save(depositProduct);
+    }
+  }
+
+  shipment.status = status;
+
+  if (status === State.DELIVERED) {
+    shipment.deliveryDate = date ? new Date(date) : new Date();
+  }
+
+  await this.shipmentRepository.save(shipment);
+
+  return { message: 'Estado actualizado correctamente' };
+}
+
 }
