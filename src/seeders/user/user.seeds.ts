@@ -15,10 +15,10 @@ export class UsersSeeds {
   async run() {
     const users = [
       {
-        fullName: 'Carlos Gomez',
-        email: 'admin@example.com',
+        fullName: 'Glu Logistica',
+        email: 'logisticaglu@gmail.com',
         dni: '2345678990',
-        password: 'Admin123@',
+        password: 'NahuelGluLogistica!@',
         address: 'Córdoba',
         phone: '222222',
         birthdate: new Date('1985-06-15'),
@@ -26,9 +26,42 @@ export class UsersSeeds {
         role: Role.Admin
       },
       {
+        fullName: 'Nahuel Gando',
+        email: 'gandonahuel@gmail.com',
+        dni: '23456654364',
+        password: 'NahuelAdminGando@',
+        address: 'Córdoba',
+        phone: '2225436',
+        birthdate: new Date('1985-06-15'),
+        company: '',
+        role: Role.Admin
+      },
+      {
+        fullName: 'Agustin Ancona',
+        email: 'agustinanconadev@gmail.com',
+        dni: '2345665436',
+        password: 'Cucarachita@',
+        address: 'Córdoba',
+        phone: '22225436',
+        birthdate: new Date('1985-06-15'),
+        company: '',
+        role: Role.Admin
+      },
+      {
+        fullName: 'Rocio Bonin',
+        email: 'rociobonindev@gmail.com',
+        dni: '2345665432',
+        password: 'Rochycapa3@',
+        address: 'Córdoba',
+        phone: '222255425',
+        birthdate: new Date('1985-06-15'),
+        company: '',
+        role: Role.Admin
+      },
+      {
         fullName: 'Lautaro Gando',
         email: 'lautarogandodev@gmail.com',
-        dni: '2365346534',
+        dni: '23653465654',
         password: 'Ganditocapo@',
         address: 'Córdoba',
         phone: '265373',
