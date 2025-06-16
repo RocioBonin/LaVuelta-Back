@@ -8,7 +8,6 @@
   "scripts": {
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
-    "start": "nest start",
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",
@@ -17,7 +16,10 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./test/jest-e2e.json"
+    "test:e2e": "jest --config ./test/jest-e2e.json",
+    "start": "nest start",
+    "migration:generate": "npm run build && ts-node -r tsconfig-paths/register src/config/data/source.ts migration:generate",
+    "migration:run": "ts-node -r tsconfig-paths/register src/config/data/source.ts migration:run"
   },
   "dependencies": {
     "@nestjs-modules/mailer": "^2.0.2",
