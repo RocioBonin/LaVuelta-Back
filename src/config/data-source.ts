@@ -13,7 +13,7 @@ const dataSourceConfig: DataSourceOptions = {
   username: isRender ? process.env.DB_USERNAME_RENDER : process.env.DB_USERNAME_LOCAL,
   password: isRender ? process.env.DB_PASSWORD_RENDER : process.env.DB_PASSWORD_LOCAL,
   database: isRender ? process.env.DB_NAME_RENDER : process.env.DB_NAME_LOCAL,
-  synchronize: true,
+  synchronize: false,
   dropSchema: false,
   logging: ['error'],
   ssl: process.env.DB_SSL === 'true' ? { rejectUnauthorized: false } : false,
