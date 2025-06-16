@@ -40,9 +40,8 @@ async function bootstrap() {
   const origins = configService.get<string>('CORS_ORIGIN')?.split(',') || [];
 
   app.enableCors({
-    origin: origins,
-    credentials: true,
-  });
+    origin: '*'
+  })
 
   app.use(loggerMiddleware);
 
