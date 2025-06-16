@@ -1,7 +1,6 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { postgresDataSourceConfig } from './config/data-source';
+import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { EmailModule } from './modules/email/email.module';
 import { UsersModule } from './modules/users/user.module';
 import { AuthModule } from './modules/auth/auth.module';
@@ -13,18 +12,27 @@ import { AppService } from './app.service';
 import { MercadopagoModule } from './modules/mercadopago/mercadopago.module';
 import { DepositModule } from './modules/deposit/deposit.module';
 import { ShipmentModule } from './modules/shipment/shipment.module';
+import { dbConfig } from './config/data-source';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: './.env.development',
-      load: [postgresDataSourceConfig],
+      envFilePath: '.env.development.local',
+      load: [dbConfig],
     }),
     TypeOrmModule.forRootAsync({
       inject: [ConfigService],
-      useFactory: (configService: ConfigService) => 
-        configService.get('postgres'),
+      useFactory: (configService: ConfigService): TypeOrmModuleOptions => {
+        
+        const config = configService.get<TypeOrmModuleOptions>('postgres')
+         
+        if (!config) {
+          throw new Error('Database configuration not found');
+        }
+
+        return config;
+      },
     }),
     EmailModule,
     UsersModule,

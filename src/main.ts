@@ -5,7 +5,7 @@ import { HttpExceptionFilter } from './common/middleware/errors.middleware';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { UsersSeeds } from './seeders/user/user.seeds';
 import { loggerMiddleware } from './common/middleware/logger.middleware';
-import { DepositSeeds } from './seeders/deposit/deposit.seeds';
+import { ConfigService } from '@nestjs/config';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -22,9 +22,6 @@ async function bootstrap() {
 
   const usersSeed = app.get(UsersSeeds);
   await usersSeed.run();
-  
-  const depositSeed = app.get(DepositSeeds);
-  await depositSeed.run();
 
   app.useGlobalFilters(new HttpExceptionFilter());
 
@@ -38,8 +35,12 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, swaggerConfig);
   SwaggerModule.setup('api', app, document);
 
+   const configService = app.get(ConfigService);
+
+  const origins = configService.get<string>('CORS_ORIGIN')?.split(',') || [];
+
   app.enableCors({
-    origin: ['http://localhost:3000'],
+    origin: origins,
     credentials: true,
   });
 
