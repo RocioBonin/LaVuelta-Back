@@ -20,7 +20,10 @@ export class EmailController {
       const { from, to, subject, message } = sendEmailDto;
       return await this.emailService.sendEmail({ from, to, subject, message });
     } catch (error) {
-      throw new Error(`Error enviando el correo: ${error.message}`);
+      if (error instanceof Error) {
+        throw new Error(`Error enviando el correo: ${error.message}`);
+      }
+      throw new Error('Error desconocido');
     }
   }
 
@@ -35,7 +38,10 @@ export class EmailController {
       const { from, subject, message } = formContactDto;
       return this.emailService.formContact({ from, subject, message });
     } catch (error) {
-      throw new Error(`Error enviando el formulario: ${error.message}`);
+      if (error instanceof Error) {
+        throw new Error(`Error enviando el formulario: ${error.message}`);
+      }
+      throw new Error('Error desconocido');
     }
   }
 }

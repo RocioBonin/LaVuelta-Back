@@ -17,8 +17,8 @@ const dataSourceConfig: DataSourceOptions = {
   dropSchema: false,
   logging: ['error'],
   ssl: process.env.DB_SSL === 'true' ? { rejectUnauthorized: false } : false,
-  entities: isRender ? ['dist/**/*.entity.js'] : ['src/**/*.entity.ts'],
-  migrations: isRender ? ['dist/migrations/*.js'] : ['src/migrations/*.ts'],
+  entities: ['dist/**/*.entity{.ts,.js}'],
+  migrations: ['dist/migrations/*{.js,.ts}'],
 };
 
 export const dbConfig = registerAs('postgres', () => dataSourceConfig);

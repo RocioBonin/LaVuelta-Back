@@ -18,11 +18,17 @@
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "start": "nest start",
-    "migration:cli": "node --require tsconfig-paths/register ./node_modules/typeorm/cli.js",
-    "migration:run": "npm run migration:cli -- migration:run -d dist/config/data-source.js",
-    "migration:revert": "npm run migration:cli -- migration:revert -d dist/config/data-source.js",
-    "migration:show": "npm run migration:cli -- migration:show -d dist/config/data-source.js"
-
+    "typeorm": "ts-node ./node_modules/typeorm/cli.js",
+    "migration:generate":
+      "npm run typeorm -- migration:generate ./src/migrations -d ./src/config/data-source.ts",
+    "migration:create":
+      "npm run typeorm -- migration:create ./src/migrations -d ./src/config/data-source.ts",
+    "migration:run":
+      "npm run typeorm -- migration:run -d ./src/config/data-source.ts",
+    "migration:revert":
+      "npm run typeorm -- migration:revert -d ./src/config/data-source.ts",
+    "migration:show":
+      "npm run typeorm -- migration:show -d ./src/config/data-source.ts"
   },
   "dependencies": {
     "@nestjs-modules/mailer": "^2.0.2",
@@ -53,13 +59,14 @@
     "pg": "^8.13.1",
     "reflect-metadata": "^0.2.0",
     "rxjs": "^7.8.1",
-    "typeorm": "^0.3.20",
+    "typeorm": "^0.3.25",
     "uuid": "^11.0.3"
   },
   "devDependencies": {
     "@nestjs/cli": "^10.0.0",
     "@nestjs/schematics": "^10.0.0",
     "@nestjs/testing": "^10.0.0",
+    "@types/bcrypt": "^5.0.2",
     "@types/express": "^5.0.0",
     "@types/express-session": "^1.18.1",
     "@types/jest": "^29.5.2",

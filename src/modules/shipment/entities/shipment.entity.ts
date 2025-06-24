@@ -30,8 +30,8 @@ export class Shipment {
   @Column({nullable: true})
   price: number;
 
-  @Column({nullable: true})
-  deliveryDate: Date;
+  @Column({ type: 'date', nullable: true })
+  deliveryDate: string;
 
   @Column({
     type: 'enum',

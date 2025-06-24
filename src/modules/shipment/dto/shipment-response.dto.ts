@@ -35,7 +35,7 @@ export class ShipmentResponseDto {
   status: string;
 
   @Expose()
-  deliveryDate: Date;
+  deliveryDate: string;
 
   @Expose()
   price: number;

@@ -1,4 +1,5 @@
 import { Controller, Post, Req, Res, HttpStatus } from '@nestjs/common';
+import { Request, Response } from 'express';
 import * as mercadopago from 'mercadopago';
 
 @Controller('webhooks')
@@ -6,7 +7,7 @@ export class MercadopagoWebhookController {
   constructor() {}
 
   @Post('mercadopago')
-  async handleWebhook(@Req() req, @Res() res) {
+  async handleWebhook(@Req() req: Request, @Res() res: Response) {
     const { body, query } = req;
 
     console.log('Webhook recibido:', body);

@@ -115,7 +115,7 @@ export class UserService {
   async getUserByCompanyName(company: string) {
     const user = await this.userRepository.findOne({
       where: { company: company },
-      relations:['deposit']
+      relations: ['deposit'],
     });
 
     if (!user) {
@@ -151,6 +151,10 @@ export class UserService {
 
   async changePassword(userId: string, changePassDto: ChangePasswordDto) {
     const user = await this.userRepository.findOne({ where: { id: userId } });
+
+    if (!user) {
+      throw new NotFoundException('Usuario no encontrado');
+    }
 
     const isPasswordValid = await bcrypt.compare(
       changePassDto.password,
@@ -198,6 +202,10 @@ export class UserService {
   async assignAdmin(userId: string): Promise<{ message: string }> {
     const user = await this.userRepository.findOne({ where: { id: userId } });
 
+    if (!user) {
+      throw new NotFoundException('Usuario no encontrado');
+    }
+
     if (user.role === Role.Admin) {
       throw new ConflictException('El usuario ya es administrador');
     }
@@ -210,6 +218,10 @@ export class UserService {
 
   async removeAdmin(userId: string): Promise<{ message: string }> {
     const user = await this.userRepository.findOneBy({ id: userId });
+
+    if (!user) {
+      throw new NotFoundException('Usuario no encontrado');
+    }
 
     if (user.role !== Role.Admin) {
       throw new ConflictException('El usuario no es administrador');

@@ -32,7 +32,7 @@ export class ShipmentService {
 
   async createShipment(createShipmentDto: CreateShipmentDto) {
     const queryRunner = this.dataSource.createQueryRunner();
-        await queryRunner.connect();
+    await queryRunner.connect();
     await queryRunner.startTransaction();
 
     try {
@@ -134,8 +134,8 @@ export class ShipmentService {
     const shipments = users.flatMap((user) => user.shipments);
 
     return plainToInstance(ShipmentResponseDto, shipments, {
-        excludeExtraneousValues: true,
-      });
+      excludeExtraneousValues: true,
+    });
   }
 
   async findAll() {
@@ -158,46 +158,55 @@ export class ShipmentService {
     return { message: 'Envío elimiando exítosamente' };
   }
 
-  async updateStatus(shipmentId: string, status: State, date?: string | Date) {
-  const shipment = await this.shipmentRepository.findOne({
-    where: { id: shipmentId },
-    relations: ['shipmentProducts', 'shipmentProducts.product'],
-  });
-
-  if (!shipment) {
-    throw new NotFoundException('Envío no encontrado');
+  private getTodayDateString(): string {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, '0');
+    const day = String(today.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
   }
 
-  if (status === State.PACKAGING) {
-    for (const sp of shipment.shipmentProducts) {
-      const depositProduct = await this.depositRepository.findOne({
-        where: { id: sp.product.id },
-      });
+  async updateStatus(shipmentId: string, status: State, date?: string ) {
+    const shipment = await this.shipmentRepository.findOne({
+      where: { id: shipmentId },
+      relations: ['shipmentProducts', 'shipmentProducts.product'],
+    });
 
-      if (!depositProduct) {
-        throw new NotFoundException(`Producto con ID ${sp.product.id} no encontrado`);
-      }
-
-      if (depositProduct.quantity < sp.quantity) {
-        throw new BadRequestException(
-          `Stock insuficiente para el producto con ID ${sp.product.id}`,
-        );
-      }
-
-      depositProduct.quantity -= sp.quantity;
-      await this.depositRepository.save(depositProduct);
+    if (!shipment) {
+      throw new NotFoundException('Envío no encontrado');
     }
+
+    if (status === State.PACKAGING) {
+      for (const sp of shipment.shipmentProducts) {
+        const depositProduct = await this.depositRepository.findOne({
+          where: { id: sp.product.id },
+        });
+
+        if (!depositProduct) {
+          throw new NotFoundException(
+            `Producto con ID ${sp.product.id} no encontrado`,
+          );
+        }
+
+        if (depositProduct.quantity < sp.quantity) {
+          throw new BadRequestException(
+            `Stock insuficiente para el producto con ID ${sp.product.id}`,
+          );
+        }
+
+        depositProduct.quantity -= sp.quantity;
+        await this.depositRepository.save(depositProduct);
+      }
+    }
+
+    shipment.status = status;
+
+    if (status === State.DELIVERED) {
+      shipment.deliveryDate = date ?? this.getTodayDateString();
+    }
+
+    await this.shipmentRepository.save(shipment);
+
+    return { message: 'Estado actualizado correctamente' };
   }
-
-  shipment.status = status;
-
-  if (status === State.DELIVERED) {
-    shipment.deliveryDate = date ? new Date(date) : new Date();
-  }
-
-  await this.shipmentRepository.save(shipment);
-
-  return { message: 'Estado actualizado correctamente' };
-}
-
 }

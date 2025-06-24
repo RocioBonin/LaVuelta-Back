@@ -1,4 +1,4 @@
-import { IsUUID, IsString, IsArray, ValidateNested, IsOptional, IsEnum, IsDate, IsNumber } from 'class-validator';
+import { IsUUID, IsString, IsArray, ValidateNested, IsOptional, IsEnum, IsDate, IsNumber, Matches } from 'class-validator';
 import { Type } from 'class-transformer';
 import { CreateShipmentProductDto } from './create-shipment-product.dto';
 import { State } from '../enums/state.enum';
@@ -31,9 +31,10 @@ export class CreateShipmentDto {
   price?: number;
 
   @IsOptional()
-  @IsDate()
-  @Type(() => Date)
-  deliveryDate?: Date;
+  @Matches(/^\d{4}-\d{2}-\d{2}$/, {
+    message: 'deliveryDate debe estar en formato YYYY-MM-DD',
+  })
+  deliveryDate?: string;
 
   @IsEnum(ShipmentType)
   shipmentType: ShipmentType;

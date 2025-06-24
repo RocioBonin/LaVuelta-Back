@@ -33,7 +33,7 @@ import {
       }
     }
   
-    private extractTokenFromHeader(request: Request): string {
+    private extractTokenFromHeader(request: Request) {
       const authorizationHeader = (request.headers as any).authorization;
       
       const [type, token] = authorizationHeader?.split(' ') ?? [];

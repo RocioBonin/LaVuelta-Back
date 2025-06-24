@@ -73,7 +73,7 @@ export class ShipmentController {
     @Body() dto: StatusShipmentDto,
     @Param('id') shipmentId: string,
   ) {
-    const date = dto.date ? new Date(dto.date) : undefined;
+    const date = dto.date || undefined;
     return await this.shipmentService.updateStatus(shipmentId, dto.status, date);
   }
 }

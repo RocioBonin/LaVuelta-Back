@@ -5,24 +5,27 @@ import { EmailService } from "./email.service";
 import { ConfigModule, ConfigService } from '@nestjs/config';
 
 @Module({
-  imports:[
+  imports: [
     ConfigModule,
     MailerModule.forRootAsync({
-      imports: [ConfigModule], // para inyectar ConfigService
-      useFactory: async (configService: ConfigService) => ({
-        transport: {
-          host: configService.get<string>('MAIL_HOST'),
-          port: Number(configService.get<number>('EMAIL_PORT')),
-          secure: false,
-          auth: {
-            user: configService.get<string>('MAIL_USERNAME'),
-            pass: configService.get<string>('MAIL_PASSWORD').replace(/_/g, ' '),
+      imports: [ConfigModule],
+      useFactory: async (configService: ConfigService) => {
+        const mailPassword = configService.get<string>('MAIL_PASSWORD');
+        return {
+          transport: {
+            host: configService.get<string>('MAIL_HOST'),
+            port: Number(configService.get<number>('EMAIL_PORT')),
+            secure: false,
+            auth: {
+              user: configService.get<string>('MAIL_USERNAME'),
+              pass: mailPassword ? mailPassword.replace(/_/g, ' ') : '',
+            },
           },
-        },
-        defaults: {
-          from: 'Glu Logistica <logisticaglu@gmail.com>',
-        },
-      }),
+          defaults: {
+            from: 'Glu Logistica <logisticaglu@gmail.com>',
+          },
+        };
+      },
       inject: [ConfigService],
     }),
   ],
@@ -31,3 +34,4 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
   exports: [EmailService],
 })
 export class EmailModule {}
+
